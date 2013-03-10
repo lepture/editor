@@ -18,7 +18,7 @@ define(function(require, exports, module) {
     ];
     options.status = options.status || ['lines', 'words', 'cursor'];
     this.options = options;
-  }
+  };
 
   Editor.prototype.render = function(el) {
     if (!el) {
@@ -92,7 +92,7 @@ define(function(require, exports, module) {
 
     this.createToolbar();
     this.createStatusbar();
-  }
+  };
 
   Editor.prototype.createToolbar = function(tools) {
     tools = tools || this.options.tools;
@@ -110,14 +110,14 @@ define(function(require, exports, module) {
         // bind events
         el.onclick = function() {
           return self.action(name);
-        }
+        };
         bar.appendChild(el);
       })(tools[i]);
     }
     var editorElement = this.editor.getWrapperElement();
     editorElement.parentNode.insertBefore(bar, editorElement);
     return bar;
-  }
+  };
 
   Editor.prototype.createStatusbar = function(status) {
     status = status || this.options.status;
@@ -155,7 +155,7 @@ define(function(require, exports, module) {
     var editorElement = this.editor.getWrapperElement();
     editorElement.parentNode.insertBefore(bar, editorElement.nextSibling);
     return bar;
-  }
+  };
 
   Editor.prototype.action = function(name, ed) {
     ed = ed || this.editor;
@@ -216,7 +216,7 @@ define(function(require, exports, module) {
         ed.focus();
         break;
     }
-  }
+  };
 
 
   exports = module.exports = new Editor();
