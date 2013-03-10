@@ -1,10 +1,10 @@
 /* BASICS */
-.cm-wrapper {
+.editor-wrapper {
   font: 16px/1.62 "Helvetica Neue", "Xin Gothic", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
   color: #2c3e50;
 }
 /* this is the title */
-.cm-wrapper input {
+.editor-wrapper input {
   font: 18px "Helvetica Neue", "Xin Gothic", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
   background: transparent;
   padding: 4px;
@@ -13,7 +13,7 @@
   outline: none;
   opacity: 0.6;
 }
-.cm-toolbar {
+.editor-toolbar {
   border-top: 1px solid #bdc3c7;
   border-bottom: 1px solid #bdc3c7;
   padding: 8px 0;
@@ -21,35 +21,31 @@
   opacity: 0.6;
   -webkit-mask-box-image: -webkit-radial-gradient(white, transparent 90%);
 }
-.cm-wrapper input:hover, .cm-wrapper input:focus, .cm-toolbar:hover {
+.editor-wrapper input:hover, .editor-wrapper input:focus, .editor-toolbar:hover {
   opacity: 1;
 }
-.cm-toolbar span {
+.editor-toolbar span {
   display: inline-block;
   width: 24px;
   height: 24px;
+  margin: 2px;
   border: 1px solid transparent;
   border-radius: 3px;
   cursor: pointer;
-  font: bold 18px/24px monospace;
 }
-.cm-toolbar span:hover {
+.editor-toolbar span:hover {
   background: #fcfcfc;
   border-color: #95a5a6;
 }
-.cm-toolbar i.sep {
+.editor-toolbar span:before {
+  line-height: 24px;
+}
+.editor-toolbar i.separator {
   display: inline-block;
   width: 0;
   border-left: 1px solid #d9d9d9;
-  overflow: hidden;
+  border-right: 1px solid white;
+  color: transparent;
   text-indent: -10px;
-}
-
-/* toolbar */
-#cm-italic {
-  font-style: italic;
-}
-#cm-quote {
-  font-family: Georgia;
-  vertical-align: middle;
+  margin: 0 6px;
 }

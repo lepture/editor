@@ -7,6 +7,8 @@
     <script type="text/javascript" src="codemirror/xml.js"></script>
     <script type="text/javascript" src="codemirror/markdown.js"></script>
     <script type="text/javascript" src="codemirror/gfm.js"></script>
+    <script type="text/javascript" src="http://seajs.org/dist/sea.js"></script>
+    <link rel="stylesheet" href="icomoon/style.css" />
     <link rel="stylesheet" href="src/editor.css" />
     <link rel="stylesheet" href="src/paper.css" />
     <title>Editor</title>
@@ -16,30 +18,22 @@
         margin: 0;
         background-color: #f9f9f5;
       }
-      .cm-wrapper {
-        width: 680px;
+      .editor-wrapper {
+        max-width: 680px;
+        padding: 10px;
         margin: 60px auto;
       }
     </style>
   </head>
   <body>
-    <div class="cm-wrapper">
+    <div class="editor-wrapper">
       <input type="text" placeholder="Title" />
-      <div class="cm-toolbar">
-        <span id="cm-bold">B</span>
-        <span id="cm-italic">I</span>
-        <span id="cm-underline">U</span>
-        <i class="sep">|</i>
-        <span id="cm-quote">"</span>
-      </div>
       <textarea id="editor" placeholder="Content here ...."></textarea>
     </div>
     <script type="text/javascript">
-      var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
-        mode: 'gfm',
-        theme: 'paper',
-        indentWithTabs: true,
-        lineNumbers: false
+      seajs.use('./src/editor', function(editor) {
+        editor.render();
+        window.editor = editor;
       });
     </script>
   </body>
