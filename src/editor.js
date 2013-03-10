@@ -26,14 +26,37 @@ define(function(require, exports, module) {
     }
     this.element = el;
 
+    var self = this;
     this.editor = CodeMirror.fromTextArea(el, {
       mode: 'gfm',
       theme: 'paper',
       indentWithTabs: true,
-      lineNumbers: false
+      lineNumbers: false,
+      extraKeys: {
+        'Cmd-B': function(cm) {
+          self.action('bold', cm);
+        },
+        'Cmd-I': function(cm) {
+          self.action('italic', cm);
+        },
+        'Cmd-L': function(cm) {
+          self.action('link', cm);
+        },
+        'Shift-Cmd-S': function(cm) {
+          self.action('strikethrough', cm);
+        },
+        'Shift-Cmd-O': function(cm) {
+          self.action('ordered-list', cm);
+        },
+        'Shift-Cmd-U': function(cm) {
+          self.action('unordered-list', cm);
+        },
+        'Shift-Cmd-I': function(cm) {
+          self.action('image', cm);
+        }
+      }
     });
 
-    var editorElement = this.editor.getWrapperElement();
     this.createToolbar();
     this.createStatusbar();
   }
@@ -101,8 +124,8 @@ define(function(require, exports, module) {
     return bar;
   }
 
-  Editor.prototype.action = function(name) {
-    var ed = this.editor;
+  Editor.prototype.action = function(name, ed) {
+    ed = ed || this.editor;
     if (!ed) return;
 
     var replaceSelection = function(start, end) {
