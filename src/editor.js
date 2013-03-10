@@ -1,19 +1,30 @@
 define(function(require, exports, module) {
 
-  function Editor(el) {
-    this.element = el;
-    // this.info = 'markdown.html';
+  function Editor(options) {
+    this.init(options);
   }
 
-  Editor.prototype.render = function(el, tools) {
+  Editor.prototype.init = function(options) {
+    options = options || {};
+    if (options.element) {
+      this.element = el;
+    }
+    options.tools = options.tools || [
+      'bold', 'italic', 'strikethrough', 'separator',
+      'quote', 'unordered-list', 'ordered-list', 'separator',
+      'link', 'image', 'separator',
+      'undo', 'redo', 'separator',
+      'info', 'expand'
+    ];
+    options.status = options.status || ['lines', 'words', 'cursor'];
+    this.options = options;
+  }
+
+  Editor.prototype.render = function(el) {
     if (!el) {
       el = this.element || document.getElementsByTagName('textarea')[0];
     }
     this.element = el;
-
-    if (tools !== null) {
-      this.createToolbar(tools);
-    }
 
     this.editor = CodeMirror.fromTextArea(el, {
       mode: 'gfm',
@@ -21,16 +32,16 @@ define(function(require, exports, module) {
       indentWithTabs: true,
       lineNumbers: false
     });
+
+    var editorElement = this.editor.getWrapperElement();
+    this.createToolbar();
+    this.createStatusbar();
   }
 
   Editor.prototype.createToolbar = function(tools) {
-    tools = tools || [
-      'bold', 'italic', 'strikethrough', 'separator',
-      'quote', 'unordered-list', 'ordered-list', 'separator',
-      'link', 'image', 'separator',
-      'undo', 'redo', 'separator',
-      'info', 'expand'
-    ];
+    tools = tools || this.options.tools;
+
+    if (!tools || tools.length === 0) return;
 
     var bar = document.createElement('div');
     bar.className = 'editor-toolbar';
@@ -47,8 +58,46 @@ define(function(require, exports, module) {
         bar.appendChild(el);
       })(tools[i]);
     }
-    el = this.element;
-    el.parentNode.insertBefore(bar, el);
+    var editorElement = this.editor.getWrapperElement();
+    editorElement.parentNode.insertBefore(bar, editorElement);
+    return bar;
+  }
+
+  Editor.prototype.createStatusbar = function(status) {
+    status = status || this.options.status;
+
+    if (!status || status.length === 0) return;
+
+    var bar = document.createElement('div');
+    bar.className = 'editor-statusbar';
+
+    var pos, editor = this.editor;
+    for (var i = 0; i < status.length; i++) {
+      (function(name) {
+        var el = document.createElement('span');
+        el.className = name;
+        if (name === 'words') {
+          el.innerHTML = '0';
+          editor.on('update', function() {
+            el.innerHTML = editor.getValue().length;
+          });
+        } else if (name === 'lines') {
+          el.innerHTML = '0';
+          editor.on('update', function() {
+            el.innerHTML = editor.lineCount();
+          });
+        } else if (name === 'cursor') {
+          el.innerHTML = '0:0';
+          editor.on('cursorActivity', function() {
+            pos = editor.getCursor();
+            el.innerHTML = pos.line + ':' + pos.ch;
+          });
+        }
+        bar.appendChild(el);
+      })(status[i]);
+    }
+    var editorElement = this.editor.getWrapperElement();
+    editorElement.parentNode.insertBefore(bar, editorElement.nextSibling);
     return bar;
   }
 

@@ -1,10 +1,12 @@
-/* BASICS */
+.CodeMirror {
+  height: 450px;
+}
 .editor-wrapper {
   font: 16px/1.62 "Helvetica Neue", "Xin Gothic", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
   color: #2c3e50;
 }
 /* this is the title */
-.editor-wrapper input {
+.editor-wrapper input.title {
   font: 18px "Helvetica Neue", "Xin Gothic", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
   background: transparent;
   padding: 4px;
@@ -21,7 +23,7 @@
   opacity: 0.6;
   -webkit-mask-box-image: -webkit-radial-gradient(white, transparent 90%);
 }
-.editor-wrapper input:hover, .editor-wrapper input:focus, .editor-toolbar:hover {
+.editor-wrapper input.title:hover, .editor-wrapper input.title:focus, .editor-toolbar:hover {
   opacity: 1;
 }
 .editor-toolbar span {
@@ -48,4 +50,22 @@
   color: transparent;
   text-indent: -10px;
   margin: 0 6px;
+}
+.editor-statusbar {
+  border-top: 1px solid #ece9e9;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #959694;
+  text-align: right;
+}
+.editor-statusbar span {
+  display: inline-block;
+  min-width: 4em;
+  margin-left: 1em;
+}
+.editor-statusbar .lines:before {
+  content: 'lines: ';
+}
+.editor-statusbar .words:before {
+  content: 'words: ';
 }
