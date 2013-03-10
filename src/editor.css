@@ -44,3 +44,12 @@
   overflow: hidden;
   text-indent: -10px;
 }
+
+/* toolbar */
+#cm-italic {
+  font-style: italic;
+}
+#cm-quote {
+  font-family: Georgia;
+  vertical-align: middle;
+}
