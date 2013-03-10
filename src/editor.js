@@ -27,12 +27,12 @@ define(function(require, exports, module) {
     this.element = el;
 
     var self = this;
-    this.editor = CodeMirror.fromTextArea(el, {
-      mode: 'gfm',
-      theme: 'paper',
-      indentWithTabs: true,
-      lineNumbers: false,
-      extraKeys: {
+
+
+    var keyMaps;
+
+    if (/Mac/.test(navigator.platform)) {
+      keyMaps = {
         'Cmd-B': function(cm) {
           self.action('bold', cm);
         },
@@ -54,7 +54,40 @@ define(function(require, exports, module) {
         'Shift-Cmd-I': function(cm) {
           self.action('image', cm);
         }
-      }
+      };
+
+    } else {
+      keyMaps = {
+        'Ctrl-B': function(cm) {
+          self.action('bold', cm);
+        },
+        'Ctrl-I': function(cm) {
+          self.action('italic', cm);
+        },
+        'Ctrl-L': function(cm) {
+          self.action('link', cm);
+        },
+        'Shift-Ctrl-S': function(cm) {
+          self.action('strikethrough', cm);
+        },
+        'Shift-Ctrl-O': function(cm) {
+          self.action('ordered-list', cm);
+        },
+        'Shift-Ctrl-U': function(cm) {
+          self.action('unordered-list', cm);
+        },
+        'Shift-Ctrl-I': function(cm) {
+          self.action('image', cm);
+        }
+      };
+    }
+
+    this.editor = CodeMirror.fromTextArea(el, {
+      mode: 'gfm',
+      theme: 'paper',
+      indentWithTabs: true,
+      lineNumbers: false,
+      extraKeys: keyMaps
     });
 
     this.createToolbar();
