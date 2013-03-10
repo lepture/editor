@@ -1,0 +1,10 @@
+{
+  "family": "lepture",
+  "name": "editor",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-uglify": "*"
+  }
+}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="codemirror/codemirror.js"></script>
+    <script type="text/javascript" src="codemirror/overlay.js"></script>
+    <script type="text/javascript" src="codemirror/xml.js"></script>
+    <script type="text/javascript" src="codemirror/markdown.js"></script>
+    <script type="text/javascript" src="codemirror/gfm.js"></script>
+    <link rel="stylesheet" href="src/editor.css" />
+    <link rel="stylesheet" href="src/paper.css" />
+    <title>Editor</title>
+    <style type="text/css">
+      body {
+        padding: 0;
+        margin: 0;
+        background-color: #f9f9f5;
+      }
+      .cm-wrapper {
+        width: 680px;
+        margin: 60px auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="cm-wrapper">
+      <input type="text" placeholder="Title" />
+      <div class="cm-toolbar">
+        <span id="cm-bold">B</span>
+        <span id="cm-italic">I</span>
+        <span id="cm-underline">U</span>
+        <i class="sep">|</i>
+      </div>
+      <textarea id="editor" placeholder="Content here ...."></textarea>
+    </div>
+    <script type="text/javascript">
+      var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+        mode: 'gfm',
+        theme: 'paper',
+        indentWithTabs: true,
+        lineNumbers: false
+      });
+    </script>
+  </body>
+</html>
