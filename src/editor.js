@@ -185,10 +185,10 @@ define(function(require, exports, module) {
         start = text.slice(0, pos.ch);
         end = text.slice(pos.ch);
         if (name === 'bold') {
-          start = start.replace(/^(.*)(\*|\_){2}(\S+.*)$/, '$1$3');
+          start = start.replace(/^(.*)?(\*|\_){2}(\S+.*)?$/, '$1$3');
           end = end.replace(/^(.*\S+)?(\*|\_){2}(\s+.*)?$/, '$1$3');
         } else if (name === 'italic') {
-          start = start.replace(/^(.*)(\*|\_)(\S+.*)$/, '$1$3');
+          start = start.replace(/^(.*)?(\*|\_)(\S+.*)?$/, '$1$3');
           end = end.replace(/^(.*\S+)?(\*|\_)(\s+.*)?$/, '$1$3');
         }
         ed.setLine(pos.line, start + end);
