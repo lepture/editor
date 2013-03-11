@@ -107,7 +107,7 @@ define(function(require, exports, module) {
         }
       }
     });
-	
+
 	initFullScreenApi();
   };
 
@@ -260,7 +260,7 @@ define(function(require, exports, module) {
         ed.redo();
         ed.focus();
         break;
-	    case 'expand':
+      case 'expand':
         toggleFullScreen();
         break;
     }
@@ -344,14 +344,14 @@ define(function(require, exports, module) {
       browserPrefixes = 'webkit moz o ms khtml'.split(' ');
 
     // check for native support
-    if (typeof document.cancelFullScreen != 'undefined') {
+    if (typeof document.cancelFullScreen !== 'undefined') {
       fullScreenApi.supportsFullScreen = true;
     } else {
       // check for fullscreen support by vendor prefix
       for (var i = 0, il = browserPrefixes.length; i < il; i++ ) {
         fullScreenApi.prefix = browserPrefixes[i];
 
-        if (typeof document[fullScreenApi.prefix + 'CancelFullScreen' ] != 'undefined' ) {
+        if (typeof document[fullScreenApi.prefix + 'CancelFullScreen' ] !== 'undefined' ) {
           fullScreenApi.supportsFullScreen = true;
           break;
         }
@@ -377,7 +377,7 @@ define(function(require, exports, module) {
       };
       fullScreenApi.cancelFullScreen = function(el) {
         return (this.prefix === '') ? document.cancelFullScreen() : document[this.prefix + 'CancelFullScreen']();
-      }
+      };
     }
     this.fullScreenApi = fullScreenApi;
   }
