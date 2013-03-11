@@ -5,7 +5,6 @@
   "dependencies": {},
   "devDependencies": {
     "grunt-contrib-jshint": "*",
-    "grunt-contrib-concat": "*",
     "grunt-contrib-uglify": "*"
   }
 }

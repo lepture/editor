@@ -31,25 +31,21 @@ module.exports = function(grunt) {
         "node": true,
         "white": false
       }
-    },
-    concat: {
-      options: {
-        separator: ';'
-      },
-      codemirror: {
-        src: [
-          'codemirror/codemirror.js',
-          'codemirror/overlay.js',
-          'codemirror/xml.js',
-          'codemirror/markdown.js',
-          'codemirror/gfm.js'
-        ],
-        dest: 'dist/codemirror.js'
-      }
     }
   });
 
-  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.registerTask('concat', function() {
+    var data = grunt.file.read('codemirror/codemirror.js')
+    data = data.replace('window.CodeMirror', 'var CodeMirror');
+    ['overlay', 'xml', 'markdown', 'gfm'].forEach(function(name) {
+      data += grunt.file.read('codemirror/' + name + '.js');
+    });
+    var editor = grunt.file.read('src/editor.js');
+    var text = 'define(function(require, exports, module) {'
+    editor = editor.replace(text, '');
+    grunt.file.write('tmp/editor.js', text + '\n' + data + editor);
+  });
+
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.registerTask('default', ['jshint']);
 };
