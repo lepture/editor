@@ -191,10 +191,27 @@ define(function(require, exports, module) {
       ed.focus();
     };
 
-    var replaceLine = function(start) {
+    var toggleLine = function(key) {
       var pos = ed.getCursor('start');
       var text = ed.getLine(pos.line);
-      ed.setLine(pos.line, start + text);
+
+      var map;
+      if (stat[key]) {
+        map = {
+          quote: /^(\s*)\>\s+/,
+          'unordered-list': /^(\s*)(\*|\-|\+)\s+/,
+          'ordered-list': /^(\s*)\d+\.\s+/
+        };
+        text = text.replace(map[key], '$1');
+        ed.setLine(pos.line, text);
+      } else {
+        map = {
+          quote: '> ',
+          'unordered-list': '* ',
+          'ordered-list': '1. '
+        };
+        ed.setLine(pos.line, map[key] + text);
+      }
       ed.focus();
     };
 
@@ -212,13 +229,9 @@ define(function(require, exports, module) {
         replaceSelection('![', '](http://)');
         break;
       case 'quote':
-        replaceLine('> ');
-        break;
       case 'unordered-list':
-        replaceLine('* ');
-        break;
       case 'ordered-list':
-        replaceLine('1. ');
+        toggleLine(name);
         break;
       case 'undo':
         ed.undo();
