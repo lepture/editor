@@ -260,9 +260,9 @@ define(function(require, exports, module) {
         ed.redo();
         ed.focus();
         break;
-	  case 'expand':
-		toggleFullScreen();
-		break;
+	    case 'expand':
+        toggleFullScreen();
+        break;
     }
   };
 
