@@ -192,6 +192,7 @@ define(function(require, exports, module) {
           end = end.replace(/^(.*\S+)?(\*|\_)(\s+.*)?$/, '$1$3');
         }
         ed.setLine(pos.line, start + end);
+        ed.focus();
         return;
       }
       if (end === null) {
