@@ -7,7 +7,7 @@ define(function(require, exports, module) {
   Editor.prototype.init = function(options) {
     options = options || {};
     if (options.element) {
-      this.element = el;
+      this.element = options.element;
     }
     options.tools = options.tools || [
       'bold', 'italic', 'separator',
@@ -102,7 +102,7 @@ define(function(require, exports, module) {
       var stat = getState(editor);
       for (var key in stat) {
         if (stat[key]) {
-          el = document.querySelector('.icon-' + getIcon(key));
+          el = document.querySelector('.icon-' + fixIcon(key));
           el.classList.add('active');
         }
       }
@@ -275,7 +275,7 @@ define(function(require, exports, module) {
       el.innerHTML = '|';
       return el;
     }
-    icon = getIcon(icon);
+    icon = fixIcon(icon);
     el = document.createElement('span');
     el.className = 'icon-' + icon;
     return el;
@@ -309,7 +309,7 @@ define(function(require, exports, module) {
     return ret;
   }
 
-  function getIcon(name) {
+  function fixIcon(name) {
     var map = {
       quote: 'quotes-left',
       'ordered-list': 'numbered-list',
