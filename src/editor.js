@@ -178,31 +178,47 @@ define(function(require, exports, module) {
     var stat = getState(ed);
 
     var replaceSelection = function(start, end) {
+      var pos;
+      if (stat[name]) {
+        pos = ed.getCursor('start');
+        var text = ed.getLine(pos.line);
+        start = text.slice(0, pos.ch)
+        end = text.slice(pos.ch);
+        if (name === 'bold') {
+          start = start.replace(/^(.*)(\*|\_){2}(\S+.*)$/, '$1$3');
+          end = end.replace(/^(.*\S+)?(\*|\_){2}(\s+.*)?$/, '$1$3');
+        } else if (name === 'italic') {
+          start = start.replace(/^(.*)(\*|\_)(\S+.*)$/, '$1$3');
+          end = end.replace(/^(.*\S+)?(\*|\_)(\s+.*)?$/, '$1$3');
+        }
+        ed.setLine(pos.line, start + end);
+        return;
+      }
       if (end === null) {
         end = '';
       } else {
         end = end || start;
       }
       var text = ed.getSelection();
-      var pos = ed.getCursor('end');
+      pos = ed.getCursor('end');
       pos.ch += start.length;
       ed.replaceSelection(start + text + end);
       ed.setCursor(pos);
       ed.focus();
     };
 
-    var toggleLine = function(key) {
+    var toggleLine = function() {
       var pos = ed.getCursor('start');
       var text = ed.getLine(pos.line);
 
       var map;
-      if (stat[key]) {
+      if (stat[name]) {
         map = {
           quote: /^(\s*)\>\s+/,
           'unordered-list': /^(\s*)(\*|\-|\+)\s+/,
           'ordered-list': /^(\s*)\d+\.\s+/
         };
-        text = text.replace(map[key], '$1');
+        text = text.replace(map[name], '$1');
         ed.setLine(pos.line, text);
       } else {
         map = {
@@ -210,7 +226,7 @@ define(function(require, exports, module) {
           'unordered-list': '* ',
           'ordered-list': '1. '
         };
-        ed.setLine(pos.line, map[key] + text);
+        ed.setLine(pos.line, map[name] + text);
       }
       ed.focus();
     };
@@ -231,7 +247,7 @@ define(function(require, exports, module) {
       case 'quote':
       case 'unordered-list':
       case 'ordered-list':
-        toggleLine(name);
+        toggleLine();
         break;
       case 'undo':
         ed.undo();
@@ -265,7 +281,7 @@ define(function(require, exports, module) {
   }
 
   function getState(ed) {
-    var pos = ed.getCursor('anchor');
+    var pos = ed.getCursor('start');
     var stat = ed.getTokenAt(pos);
     if (!stat.type) return {};
 
