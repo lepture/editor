@@ -102,7 +102,7 @@ define(function(require, exports, module) {
       var stat = getState(editor);
       for (var key in stat) {
         if (stat[key]) {
-          var el = document.querySelector('.icon-' + getIcon(key));
+          el = document.querySelector('.icon-' + getIcon(key));
           el.classList.add('active');
         }
       }
@@ -178,11 +178,11 @@ define(function(require, exports, module) {
     var stat = getState(ed);
 
     var replaceSelection = function(start, end) {
-      var pos;
+      var pos, text;
       if (stat[name]) {
         pos = ed.getCursor('start');
-        var text = ed.getLine(pos.line);
-        start = text.slice(0, pos.ch)
+        text = ed.getLine(pos.line);
+        start = text.slice(0, pos.ch);
         end = text.slice(pos.ch);
         if (name === 'bold') {
           start = start.replace(/^(.*)(\*|\_){2}(\S+.*)$/, '$1$3');
@@ -199,7 +199,7 @@ define(function(require, exports, module) {
       } else {
         end = end || start;
       }
-      var text = ed.getSelection();
+      text = ed.getSelection();
       pos = ed.getCursor('end');
       pos.ch += start.length;
       ed.replaceSelection(start + text + end);
