@@ -10,7 +10,7 @@ define(function(require, exports, module) {
       this.element = el;
     }
     options.tools = options.tools || [
-      'bold', 'italic', 'strikethrough', 'separator',
+      'bold', 'italic', 'separator',
       'quote', 'unordered-list', 'ordered-list', 'separator',
       'link', 'image', 'separator',
       'undo', 'redo', 'separator',
@@ -42,9 +42,6 @@ define(function(require, exports, module) {
         'Cmd-L': function(cm) {
           self.action('link', cm);
         },
-        'Shift-Cmd-S': function(cm) {
-          self.action('strikethrough', cm);
-        },
         'Shift-Cmd-O': function(cm) {
           self.action('ordered-list', cm);
         },
@@ -67,9 +64,6 @@ define(function(require, exports, module) {
         'Ctrl-L': function(cm) {
           self.action('link', cm);
         },
-        'Shift-Ctrl-S': function(cm) {
-          self.action('strikethrough', cm);
-        },
         'Shift-Ctrl-O': function(cm) {
           self.action('ordered-list', cm);
         },
@@ -82,16 +76,37 @@ define(function(require, exports, module) {
       };
     }
 
-    this.editor = CodeMirror.fromTextArea(el, {
+    var editor = CodeMirror.fromTextArea(el, {
       mode: 'gfm',
       theme: 'paper',
       indentWithTabs: true,
       lineNumbers: false,
       extraKeys: keyMaps
     });
+    this.editor = editor;
 
-    this.createToolbar();
+    var bar = this.createToolbar();
     this.createStatusbar();
+
+    // ie < 9 sucks
+    if (!bar.classList || !bar.querySelector) return;
+
+    editor.on('cursorActivity', function() {
+      var icons = bar.getElementsByTagName('span');
+
+      for (var i = 0; i < icons.length; i++) {
+        var el = icons[i];
+        el.classList.remove('active');
+      }
+
+      var stat = getState(editor);
+      for (var key in stat) {
+        if (stat[key]) {
+          var el = document.querySelector('.icon-' + getIcon(key));
+          el.classList.add('active');
+        }
+      }
+    });
   };
 
   Editor.prototype.createToolbar = function(tools) {
@@ -160,6 +175,7 @@ define(function(require, exports, module) {
   Editor.prototype.action = function(name, ed) {
     ed = ed || this.editor;
     if (!ed) return;
+    var stat = getState(ed);
 
     var replaceSelection = function(start, end) {
       if (end === null) {
@@ -188,9 +204,6 @@ define(function(require, exports, module) {
         break;
       case 'italic':
         replaceSelection('*');
-        break;
-      case 'strikethrough':
-        replaceSelection('~');
         break;
       case 'link':
         replaceSelection('[', '](http://)');
@@ -232,16 +245,48 @@ define(function(require, exports, module) {
       el.innerHTML = '|';
       return el;
     }
-    if (icon === 'quote') {
-      icon = 'quotes-left';
-    } else if (icon === 'ordered-list') {
-      icon = 'numbered-list';
-    } else if (icon === 'unordered-list') {
-      icon = 'list';
-    }
+    icon = getIcon(icon);
     el = document.createElement('span');
     el.className = 'icon-' + icon;
     return el;
+  }
+
+  function getState(ed) {
+    var pos = ed.getCursor('anchor');
+    var stat = ed.getTokenAt(pos);
+    if (!stat.type) return {};
+
+    var types = stat.type.split(' ');
+
+    var ret = {}, data, text;
+    for (var i = 0; i < types.length; i++) {
+      data = types[i];
+      if (data === 'strong') {
+        ret.bold = true;
+      } else if (data === 'variable-2') {
+        text = ed.getLine(pos.line);
+        if (/^\s*\d+\.\s/.test(text)) {
+          ret['ordered-list'] = true;
+        } else {
+          ret['unordered-list'] = true;
+        }
+      } else if (data === 'atom') {
+        ret.quote = true;
+      } else if (data === 'em') {
+        ret.italic = true;
+      }
+    }
+    return ret;
+  }
+
+  function getIcon(name) {
+    var map = {
+      quote: 'quotes-left',
+      'ordered-list': 'numbered-list',
+      'unordered-list': 'list'
+    };
+    if (map[name]) return map[name];
+    return name;
   }
 
   function toggleFullScreen() {
