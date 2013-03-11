@@ -107,6 +107,8 @@ define(function(require, exports, module) {
         }
       }
     });
+	
+	initFullScreenApi();
   };
 
   Editor.prototype.createToolbar = function(tools) {
@@ -320,11 +322,60 @@ define(function(require, exports, module) {
   }
 
   function toggleFullScreen() {
-    // https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
-    var doc = document;
+    if(window.fullScreenApi.isFullScreen()){
+      window.fullScreenApi.cancelFullScreen(document.getElementsByTagName('body')[0]);
+    }else{
+      window.fullScreenApi.requestFullScreen(document.getElementsByTagName('body')[0]);
+    }
+  }
 
-    var fullscreenElement = doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement;
+  function initFullScreenApi() {
+    var fullScreenApi = {
+        supportsFullScreen: false,
+        isFullScreen: function() { return false; },
+        requestFullScreen: function() {},
+        cancelFullScreen: function() {},
+        fullScreenEventName: '',
+        prefix: ''
+      },
+      browserPrefixes = 'webkit moz o ms khtml'.split(' ');
 
-    var requestFullscreen = doc.requestFullscreen || doc.mozRequestFullScreen || doc.webkitRequestFullscreen;
+    // check for native support
+    if (typeof document.cancelFullScreen != 'undefined') {
+      fullScreenApi.supportsFullScreen = true;
+    } else {
+      // check for fullscreen support by vendor prefix
+      for (var i = 0, il = browserPrefixes.length; i < il; i++ ) {
+        fullScreenApi.prefix = browserPrefixes[i];
+
+        if (typeof document[fullScreenApi.prefix + 'CancelFullScreen' ] != 'undefined' ) {
+          fullScreenApi.supportsFullScreen = true;
+          break;
+        }
+      }
+    }
+
+    // update methods to do something useful
+    if (fullScreenApi.supportsFullScreen) {
+      fullScreenApi.fullScreenEventName = fullScreenApi.prefix + 'fullscreenchange';
+
+      fullScreenApi.isFullScreen = function() {
+        switch (this.prefix) {
+          case '':
+            return document.fullScreen;
+          case 'webkit':
+            return document.webkitIsFullScreen;
+          default:
+            return document[this.prefix + 'FullScreen'];
+        }
+      };
+      fullScreenApi.requestFullScreen = function(el) {
+        return (this.prefix === '') ? el.requestFullScreen() : el[this.prefix + 'RequestFullScreen']();
+      };
+      fullScreenApi.cancelFullScreen = function(el) {
+        return (this.prefix === '') ? document.cancelFullScreen() : document[this.prefix + 'CancelFullScreen']();
+      }
+    }
+    this.fullScreenApi = fullScreenApi;
   }
 });
