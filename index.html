@@ -14,15 +14,8 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
-    <script type="text/javascript" src="codemirror/codemirror.js"></script>
-    <script type="text/javascript" src="codemirror/overlay.js"></script>
-    <script type="text/javascript" src="codemirror/xml.js"></script>
-    <script type="text/javascript" src="codemirror/markdown.js"></script>
-    <script type="text/javascript" src="codemirror/gfm.js"></script>
-    <script type="text/javascript" src="http://seajs.org/dist/sea.js"></script>
-    <link rel="stylesheet" href="icomoon/style.css" />
-    <link rel="stylesheet" href="src/paper.css" />
-    <link rel="stylesheet" href="src/editor.css" />
+    <script type="text/javascript" src="js/editor.js"></script>
+    <link rel="stylesheet" href="css/editor.css" />
     <title>Editor</title>
     <style type="text/css">
       body {
@@ -43,10 +36,8 @@
       <textarea id="editor" placeholder="Content here ...."></textarea>
     </div>
     <script type="text/javascript">
-      seajs.use('./src/editor', function(editor) {
-        editor.render();
-        window.editor = editor;
-      });
+      var editor = new Editor();
+      editor.render();
     </script>
   </body>
 </html>

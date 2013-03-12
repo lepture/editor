@@ -1,3 +1,5 @@
+var path = require('path');
+
 module.exports = function(grunt) {
   grunt.initConfig({
     jshint: {
@@ -31,6 +33,22 @@ module.exports = function(grunt) {
         "node": true,
         "white": false
       }
+    },
+    generate: {
+      seajs: {
+        options: {
+          header: 'define(function(require, exports, module) {',
+          footer: [
+            'exports = module.exports = new Editor()',
+            'exports.Editor = Editor',
+            '});'
+          ].join('\n')
+        },
+        filename: 'seajs/editor.js'
+      },
+      window: {
+        filename: 'js/editor.js'
+      }
     }
   });
 
@@ -38,14 +56,36 @@ module.exports = function(grunt) {
     var data = grunt.file.read('codemirror/codemirror.js');
     data = data.replace('window.CodeMirror', 'var CodeMirror');
     ['overlay', 'xml', 'markdown', 'gfm'].forEach(function(name) {
-      data += grunt.file.read('codemirror/' + name + '.js');
+      data += '\n' + grunt.file.read('codemirror/' + name + '.js');
     });
-    var editor = grunt.file.read('src/editor.js');
-    var text = 'define(function(require, exports, module) {';
-    editor = editor.replace(text, '');
-    grunt.file.write('tmp/editor.js', text + '\n' + data + editor);
+    data += '\n' + grunt.file.read('src/editor.js');
+    grunt.file.write('tmp/editor.js', data);
+  });
+
+  grunt.registerMultiTask('generate', function() {
+    var options = this.options({
+      header: '(function(global) {',
+      footer: 'global.Editor = Editor;\n})(this);'
+    });
+    var data = grunt.file.read('tmp/editor.js');
+    data = [options.header, data, options.footer].join('\n');
+    grunt.file.write('build/' + this.data.filename, data);
+  });
+
+  grunt.registerTask('utils', function() {
+    var dir = 'icomoon/fonts';
+    grunt.file.recurse(dir, function(fpath) {
+      var fname = path.relative(dir, fpath);
+      grunt.file.copy(fpath, path.join('build', 'css', 'fonts', fname));
+    });
+    var data = grunt.file.read('icomoon/style.css');
+    data += grunt.file.read('src/paper.css');
+    data += grunt.file.read('src/editor.css');
+    grunt.file.write('build/css/editor.css', data);
+    grunt.file.copy('index.html', 'build/index.html');
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.registerTask('default', ['jshint']);
+  grunt.registerTask('transport', ['concat', 'generate', 'utils']);
 };
