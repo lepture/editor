@@ -33,16 +33,10 @@ define(function(require, exports, module) {
       'unordered-list': _('Shift-Cmd-U')
     };
 
-    var iconmap = options.iconmap = options.iconmap || {
+    options.iconmap = options.iconmap || {
       quote: 'quotes-left',
       'ordered-list': 'numbered-list',
       'unordered-list': 'list'
-    };
-    options.iconClass = function(name) {
-      if (iconmap[name]) {
-        name = iconmap[name];
-      }
-      return (options.iconPrefix || 'icon-') + name;
     };
     this.options = options;
   };
@@ -74,28 +68,8 @@ define(function(require, exports, module) {
     });
     this.codemirror = cm;
 
-    var bar = this.createToolbar();
+    this.createToolbar();
     this.createStatusbar();
-
-    // ie < 9 sucks
-    if (!bar.classList || !bar.querySelector) return;
-
-    cm.on('cursorActivity', function() {
-      var icons = bar.getElementsByTagName('span');
-
-      for (var i = 0; i < icons.length; i++) {
-        var el = icons[i];
-        el.classList.remove('active');
-      }
-
-      var stat = getState(cm);
-      for (var key in stat) {
-        if (stat[key]) {
-          el = document.querySelector('.' + self.options.iconClass(key));
-          el.classList.add('active');
-        }
-      }
-    });
   };
 
   Editor.prototype.createToolbar = function(tools) {
@@ -108,6 +82,7 @@ define(function(require, exports, module) {
 
     var self = this;
 
+    var options = this.options;
     var createIcon = function(name) {
       var el;
       if (name === 'separator') {
@@ -117,13 +92,16 @@ define(function(require, exports, module) {
         return el;
       }
       el = document.createElement('span');
-      el.className = self.options.iconClass(name);
-      var shortcut = self.options.shortcuts[name];
+
+      var shortcut = options.shortcuts[name];
       if (shortcut) el.title = shortcut;
+
+      el.className = (options.iconPrefix || 'icon-') + (options.iconmap[name] || name);
       return el;
     }
 
     var el;
+    self.toolbar = {};
     for (var i = 0; i < tools.length; i++) {
       name = tools[i];
       (function(name) {
@@ -132,10 +110,29 @@ define(function(require, exports, module) {
         el.onclick = function() {
           return self.action(name);
         };
+        self.toolbar[name] = el;
         bar.appendChild(el);
       })(tools[i]);
     }
-    var cmWrapper = this.codemirror.getWrapperElement();
+
+    var cm = this.codemirror;
+    cm.on('cursorActivity', function() {
+      var stat = getState(cm);
+
+      for (var key in self.toolbar) {
+        (function(key) {
+          var el = self.toolbar[key];
+          if (stat[key]) {
+            el.classList.add('active');
+          } else {
+            el.classList.remove('active');
+          }
+        })(key);
+      }
+    });
+
+
+    var cmWrapper = cm.getWrapperElement();
     cmWrapper.parentNode.insertBefore(bar, cmWrapper);
     return bar;
   };
