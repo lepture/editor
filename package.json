@@ -4,6 +4,9 @@
   "version": "0.1.0",
   "dependencies": {},
   "devDependencies": {
+    "grunt-regarde": "*",
+    "grunt-contrib-connect": "*",
+    "grunt-contrib-livereload": "*",
     "grunt-contrib-jshint": "*",
     "grunt-contrib-uglify": "*"
   }

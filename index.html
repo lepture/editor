@@ -10,6 +10,9 @@
       _gaq.push(['_trackPageLoadTime']);
       (function() {
         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        if (location.port !== 80) {
+          return;
+        }
         ga.src = '//www.google-analytics.com/ga.js';
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();

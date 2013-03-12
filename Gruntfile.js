@@ -1,4 +1,8 @@
 var path = require('path');
+var snippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
+function folderMount(connect, point) {
+  return connect.static(path.resolve(point));
+}
 
 module.exports = function(grunt) {
   grunt.initConfig({
@@ -32,6 +36,22 @@ module.exports = function(grunt) {
         "passfail": false,
         "node": true,
         "white": false
+      }
+    },
+    connect: {
+      livereload: {
+        options: {
+          port: 8000,
+          middleware: function(connect, options) {
+            return [snippet, folderMount(connect, 'build')];
+          }
+        }
+      },
+    },
+    regarde: {
+      livereload: {
+        files: 'src/*',
+        tasks: ['transport', 'livereload']
       }
     },
     generate: {
@@ -86,6 +106,13 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-regarde');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-livereload');
+
   grunt.registerTask('default', ['jshint']);
+
+  grunt.registerTask('server', ['livereload-start', 'connect', 'regarde']);
+
   grunt.registerTask('transport', ['concat', 'generate', 'utils']);
 };
