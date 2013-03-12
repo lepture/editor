@@ -1,3 +1,0 @@
-# Editor
-
-A markdown editor.
