@@ -35,4 +35,10 @@ If you don't have a node environment, get one.
     $ grunt transport
     ```
 
-Now you will get a `build` directory in the repo, open `build/index.html` with your browser.
+6. Start the livereload server:
+
+    ```
+    $ grunt server
+    ```
+
+Now you open `http://localhost:8000` with your brower.
