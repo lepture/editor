@@ -65,14 +65,14 @@ define(function(require, exports, module) {
       })(key);
     }
 
-    var editor = CodeMirror.fromTextArea(el, {
+    var cm = CodeMirror.fromTextArea(el, {
       mode: 'gfm',
       theme: 'paper',
       indentWithTabs: true,
       lineNumbers: false,
       extraKeys: keyMaps
     });
-    this.editor = editor;
+    this.codemirror = cm;
 
     var bar = this.createToolbar();
     this.createStatusbar();
@@ -80,7 +80,7 @@ define(function(require, exports, module) {
     // ie < 9 sucks
     if (!bar.classList || !bar.querySelector) return;
 
-    editor.on('cursorActivity', function() {
+    cm.on('cursorActivity', function() {
       var icons = bar.getElementsByTagName('span');
 
       for (var i = 0; i < icons.length; i++) {
@@ -88,10 +88,10 @@ define(function(require, exports, module) {
         el.classList.remove('active');
       }
 
-      var stat = getState(editor);
+      var stat = getState(cm);
       for (var key in stat) {
         if (stat[key]) {
-          el = document.querySelector('.icon-' + self.options.iconClass(key));
+          el = document.querySelector('.' + self.options.iconClass(key));
           el.classList.add('active');
         }
       }
@@ -135,8 +135,8 @@ define(function(require, exports, module) {
         bar.appendChild(el);
       })(tools[i]);
     }
-    var editorElement = this.editor.getWrapperElement();
-    editorElement.parentNode.insertBefore(bar, editorElement);
+    var cmWrapper = this.codemirror.getWrapperElement();
+    cmWrapper.parentNode.insertBefore(bar, cmWrapper);
     return bar;
   };
 
@@ -148,46 +148,46 @@ define(function(require, exports, module) {
     var bar = document.createElement('div');
     bar.className = 'editor-statusbar';
 
-    var pos, editor = this.editor;
+    var pos, cm = this.codemirror;
     for (var i = 0; i < status.length; i++) {
       (function(name) {
         var el = document.createElement('span');
         el.className = name;
         if (name === 'words') {
           el.innerHTML = '0';
-          editor.on('update', function() {
-            el.innerHTML = editor.getValue().length;
+          cm.on('update', function() {
+            el.innerHTML = cm.getValue().length;
           });
         } else if (name === 'lines') {
           el.innerHTML = '0';
-          editor.on('update', function() {
-            el.innerHTML = editor.lineCount();
+          cm.on('update', function() {
+            el.innerHTML = cm.lineCount();
           });
         } else if (name === 'cursor') {
           el.innerHTML = '0:0';
-          editor.on('cursorActivity', function() {
-            pos = editor.getCursor();
+          cm.on('cursorActivity', function() {
+            pos = cm.getCursor();
             el.innerHTML = pos.line + ':' + pos.ch;
           });
         }
         bar.appendChild(el);
       })(status[i]);
     }
-    var editorElement = this.editor.getWrapperElement();
-    editorElement.parentNode.insertBefore(bar, editorElement.nextSibling);
+    var cmWrapper = this.codemirror.getWrapperElement();
+    cmWrapper.parentNode.insertBefore(bar, cmWrapper.nextSibling);
     return bar;
   };
 
-  Editor.prototype.action = function(name, ed) {
-    ed = ed || this.editor;
-    if (!ed) return;
-    var stat = getState(ed);
+  Editor.prototype.action = function(name, cm) {
+    cm = cm || this.codemirror;
+    if (!cm) return;
+    var stat = getState(cm);
 
     var replaceSelection = function(start, end) {
       var pos, text;
       if (stat[name]) {
-        pos = ed.getCursor('start');
-        text = ed.getLine(pos.line);
+        pos = cm.getCursor('start');
+        text = cm.getLine(pos.line);
         start = text.slice(0, pos.ch);
         end = text.slice(pos.ch);
         if (name === 'bold') {
@@ -197,8 +197,8 @@ define(function(require, exports, module) {
           start = start.replace(/^(.*)?(\*|\_)(\S+.*)?$/, '$1$3');
           end = end.replace(/^(.*\S+)?(\*|\_)(\s+.*)?$/, '$1$3');
         }
-        ed.setLine(pos.line, start + end);
-        ed.focus();
+        cm.setLine(pos.line, start + end);
+        cm.focus();
         return;
       }
       if (end === null) {
@@ -206,17 +206,17 @@ define(function(require, exports, module) {
       } else {
         end = end || start;
       }
-      text = ed.getSelection();
-      pos = ed.getCursor('end');
+      text = cm.getSelection();
+      pos = cm.getCursor('end');
       pos.ch += start.length;
-      ed.replaceSelection(start + text + end);
-      ed.setCursor(pos);
-      ed.focus();
+      cm.replaceSelection(start + text + end);
+      cm.setCursor(pos);
+      cm.focus();
     };
 
     var toggleLine = function() {
-      var pos = ed.getCursor('start');
-      var text = ed.getLine(pos.line);
+      var pos = cm.getCursor('start');
+      var text = cm.getLine(pos.line);
 
       var map;
       if (stat[name]) {
@@ -226,16 +226,16 @@ define(function(require, exports, module) {
           'ordered-list': /^(\s*)\d+\.\s+/
         };
         text = text.replace(map[name], '$1');
-        ed.setLine(pos.line, text);
+        cm.setLine(pos.line, text);
       } else {
         map = {
           quote: '> ',
           'unordered-list': '* ',
           'ordered-list': '1. '
         };
-        ed.setLine(pos.line, map[name] + text);
+        cm.setLine(pos.line, map[name] + text);
       }
-      ed.focus();
+      cm.focus();
     };
 
     switch (name) {
@@ -257,12 +257,12 @@ define(function(require, exports, module) {
         toggleLine();
         break;
       case 'undo':
-        ed.undo();
-        ed.focus();
+        cm.undo();
+        cm.focus();
         break;
       case 'redo':
-        ed.redo();
-        ed.focus();
+        cm.redo();
+        cm.focus();
         break;
     }
   };
@@ -272,9 +272,9 @@ define(function(require, exports, module) {
   exports.Editor = Editor;
 
 
-  function getState(ed) {
-    var pos = ed.getCursor('start');
-    var stat = ed.getTokenAt(pos);
+  function getState(cm) {
+    var pos = cm.getCursor('start');
+    var stat = cm.getTokenAt(pos);
     if (!stat.type) return {};
 
     var types = stat.type.split(' ');
@@ -285,7 +285,7 @@ define(function(require, exports, module) {
       if (data === 'strong') {
         ret.bold = true;
       } else if (data === 'variable-2') {
-        text = ed.getLine(pos.line);
+        text = cm.getLine(pos.line);
         if (/^\s*\d+\.\s/.test(text)) {
           ret['ordered-list'] = true;
         } else {
