@@ -35,13 +35,13 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('concat', function() {
-    var data = grunt.file.read('codemirror/codemirror.js')
+    var data = grunt.file.read('codemirror/codemirror.js');
     data = data.replace('window.CodeMirror', 'var CodeMirror');
     ['overlay', 'xml', 'markdown', 'gfm'].forEach(function(name) {
       data += grunt.file.read('codemirror/' + name + '.js');
     });
     var editor = grunt.file.read('src/editor.js');
-    var text = 'define(function(require, exports, module) {'
+    var text = 'define(function(require, exports, module) {';
     editor = editor.replace(text, '');
     grunt.file.write('tmp/editor.js', text + '\n' + data + editor);
   });

@@ -55,7 +55,7 @@ define(function(require, exports, module) {
       (function(key) {
         keyMaps[shortcuts[key]] = function(cm) {
           self.action(key, cm);
-        }
+        };
       })(key);
     }
 
@@ -98,7 +98,7 @@ define(function(require, exports, module) {
 
       el.className = (options.iconPrefix || 'icon-') + (options.iconmap[name] || name);
       return el;
-    }
+    };
 
     var el;
     self.toolbar = {};
