@@ -106,11 +106,28 @@ define(function(require, exports, module) {
     var bar = document.createElement('div');
     bar.className = 'editor-toolbar';
 
-    var el, self = this;
+    var self = this;
+
+    var createIcon = function(name) {
+      var el;
+      if (name === 'separator') {
+        el = document.createElement('i');
+        el.className = name;
+        el.innerHTML = '|';
+        return el;
+      }
+      el = document.createElement('span');
+      el.className = self.options.iconClass(name);
+      var shortcut = self.options.shortcuts[name];
+      if (shortcut) el.title = shortcut;
+      return el;
+    }
+
+    var el;
     for (var i = 0; i < tools.length; i++) {
       name = tools[i];
       (function(name) {
-        el = createIcon(name, self.options.iconClass(name));
+        el = createIcon(name);
         // bind events
         el.onclick = function() {
           return self.action(name);
@@ -254,20 +271,6 @@ define(function(require, exports, module) {
   exports = module.exports = new Editor();
   exports.Editor = Editor;
 
-  // helpers
-
-  function createIcon(name, className) {
-    var el;
-    if (name === 'separator') {
-      el = document.createElement('i');
-      el.className = className;
-      el.innerHTML = '|';
-      return el;
-    }
-    el = document.createElement('span');
-    el.className = className
-    return el;
-  }
 
   function getState(ed) {
     var pos = ed.getCursor('start');
