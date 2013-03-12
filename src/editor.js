@@ -32,10 +32,17 @@ define(function(require, exports, module) {
       'ordered-list': _('Shift-Cmd-O'),
       'unordered-list': _('Shift-Cmd-U')
     };
-    options.iconmap = options.iconmap || {
+
+    var iconmap = options.iconmap = options.iconmap || {
       quote: 'quotes-left',
       'ordered-list': 'numbered-list',
       'unordered-list': 'list'
+    };
+    options.iconClass = function(name) {
+      if (iconmap[name]) {
+        name = iconmap[name];
+      }
+      return (options.iconPrefix || 'icon-') + name;
     };
     this.options = options;
   };
@@ -84,7 +91,7 @@ define(function(require, exports, module) {
       var stat = getState(editor);
       for (var key in stat) {
         if (stat[key]) {
-          el = document.querySelector('.icon-' + fixIcon(key));
+          el = document.querySelector('.icon-' + self.options.iconClass(key));
           el.classList.add('active');
         }
       }
@@ -103,7 +110,7 @@ define(function(require, exports, module) {
     for (var i = 0; i < tools.length; i++) {
       name = tools[i];
       (function(name) {
-        el = createIcon(name);
+        el = createIcon(name, self.options.iconClass(name));
         // bind events
         el.onclick = function() {
           return self.action(name);
@@ -249,17 +256,16 @@ define(function(require, exports, module) {
 
   // helpers
 
-  function createIcon(icon) {
+  function createIcon(name, className) {
     var el;
-    if (icon === 'separator') {
+    if (name === 'separator') {
       el = document.createElement('i');
-      el.className = icon;
+      el.className = className;
       el.innerHTML = '|';
       return el;
     }
-    icon = fixIcon(icon);
     el = document.createElement('span');
-    el.className = 'icon-' + icon;
+    el.className = className
     return el;
   }
 
@@ -289,16 +295,6 @@ define(function(require, exports, module) {
       }
     }
     return ret;
-  }
-
-  function fixIcon(name) {
-    var map = {
-      quote: 'quotes-left',
-      'ordered-list': 'numbered-list',
-      'unordered-list': 'list'
-    };
-    if (map[name]) return map[name];
-    return name;
   }
 
   function toggleFullScreen() {
