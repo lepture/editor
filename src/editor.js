@@ -17,6 +17,26 @@ define(function(require, exports, module) {
       'info', 'expand'
     ];
     options.status = options.status || ['lines', 'words', 'cursor'];
+
+    var isMac = /Mac/.test(navigator.platform);
+    var _ = function(text) {
+      if (!isMac) return text.replace('Cmd', 'Ctrl');
+      return text;
+    };
+
+    options.shortcuts = options.shortcuts || {
+      bold: _('Cmd-B'),
+      italic: _('Cmd-I'),
+      link: _('Cmd-L'),
+      image: _('Shift-Cmd-I'),
+      'ordered-list': _('Shift-Cmd-O'),
+      'unordered-list': _('Shift-Cmd-U')
+    };
+    options.iconmap = options.iconmap || {
+      quote: 'quotes-left',
+      'ordered-list': 'numbered-list',
+      'unordered-list': 'list'
+    };
     this.options = options;
   };
 
@@ -28,52 +48,14 @@ define(function(require, exports, module) {
 
     var self = this;
 
-
-    var keyMaps;
-
-    if (/Mac/.test(navigator.platform)) {
-      keyMaps = {
-        'Cmd-B': function(cm) {
-          self.action('bold', cm);
-        },
-        'Cmd-I': function(cm) {
-          self.action('italic', cm);
-        },
-        'Cmd-L': function(cm) {
-          self.action('link', cm);
-        },
-        'Shift-Cmd-O': function(cm) {
-          self.action('ordered-list', cm);
-        },
-        'Shift-Cmd-U': function(cm) {
-          self.action('unordered-list', cm);
-        },
-        'Shift-Cmd-I': function(cm) {
-          self.action('image', cm);
+    var keyMaps = {};
+    var shortcuts = this.options.shortcuts;
+    for (var key in shortcuts) {
+      (function(key) {
+        keyMaps[shortcuts[key]] = function(cm) {
+          self.action(key, cm);
         }
-      };
-
-    } else {
-      keyMaps = {
-        'Ctrl-B': function(cm) {
-          self.action('bold', cm);
-        },
-        'Ctrl-I': function(cm) {
-          self.action('italic', cm);
-        },
-        'Ctrl-L': function(cm) {
-          self.action('link', cm);
-        },
-        'Shift-Ctrl-O': function(cm) {
-          self.action('ordered-list', cm);
-        },
-        'Shift-Ctrl-U': function(cm) {
-          self.action('unordered-list', cm);
-        },
-        'Shift-Ctrl-I': function(cm) {
-          self.action('image', cm);
-        }
-      };
+      })(key);
     }
 
     var editor = CodeMirror.fromTextArea(el, {
