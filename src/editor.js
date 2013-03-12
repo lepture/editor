@@ -178,6 +178,7 @@ define(function(require, exports, module) {
   Editor.prototype.action = function(name, cm) {
     cm = cm || this.codemirror;
     if (!cm) return;
+
     var stat = getState(cm);
 
     var replaceSelection = function(start, end) {
@@ -212,25 +213,28 @@ define(function(require, exports, module) {
     };
 
     var toggleLine = function() {
-      var pos = cm.getCursor('start');
-      var text = cm.getLine(pos.line);
-
-      var map;
-      if (stat[name]) {
-        map = {
-          quote: /^(\s*)\>\s+/,
-          'unordered-list': /^(\s*)(\*|\-|\+)\s+/,
-          'ordered-list': /^(\s*)\d+\.\s+/
-        };
-        text = text.replace(map[name], '$1');
-        cm.setLine(pos.line, text);
-      } else {
-        map = {
-          quote: '> ',
-          'unordered-list': '* ',
-          'ordered-list': '1. '
-        };
-        cm.setLine(pos.line, map[name] + text);
+      var start = cm.getCursor('start');
+      var end = cm.getCursor('end');
+      var repl = {
+        quote: /^(\s*)\>\s+/,
+        'unordered-list': /^(\s*)(\*|\-|\+)\s+/,
+        'ordered-list': /^(\s*)\d+\.\s+/
+      };
+      var map = {
+        quote: '> ',
+        'unordered-list': '* ',
+        'ordered-list': '1. '
+      }
+      for (var i = start.line; i <= end.line; i++) {
+        (function(i) {
+          var text = cm.getLine(i);
+          if (stat[name]) {
+            text = text.replace(repl[name], '$1');
+          } else {
+            text = map[name] + text;
+          }
+          cm.setLine(i, text);
+        })(i);
       }
       cm.focus();
     };
@@ -269,8 +273,8 @@ define(function(require, exports, module) {
   exports.Editor = Editor;
 
 
-  function getState(cm) {
-    var pos = cm.getCursor('start');
+  function getState(cm, pos) {
+    pos = pos || cm.getCursor('start');
     var stat = cm.getTokenAt(pos);
     if (!stat.type) return {};
 
