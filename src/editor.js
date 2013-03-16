@@ -57,14 +57,13 @@ Editor.prototype.render = function(el) {
     })(key);
   }
 
-  var cm = CodeMirror.fromTextArea(el, {
+  this.codemirror = CodeMirror.fromTextArea(el, {
     mode: 'gfm',
     theme: 'paper',
     indentWithTabs: true,
     lineNumbers: false,
     extraKeys: keyMaps
   });
-  this.codemirror = cm;
 
   this.createToolbar();
   this.createStatusbar();
@@ -89,7 +88,7 @@ Editor.prototype.createToolbar = function(tools) {
       el.innerHTML = '|';
       return el;
     }
-    el = document.createElement('span');
+    el = document.createElement('a');
 
     var shortcut = options.shortcuts[name];
     if (shortcut) el.title = shortcut;
@@ -100,14 +99,24 @@ Editor.prototype.createToolbar = function(tools) {
 
   var el;
   self.toolbar = {};
+  var info = self.options.info || 'http://lab.lepture.com/editor/markdown';
   for (var i = 0; i < tools.length; i++) {
     name = tools[i];
     (function(name) {
       el = createIcon(name);
-      // bind events
-      el.onclick = function() {
-        return self.action(name);
-      };
+      // bind events, special for info
+      if (name === 'info') {
+        if (info && typeof info === 'function') {
+          el.onclick = info;
+        } else if (typeof info === 'string') {
+          el.href = info;
+          el.target = '_blank';
+        }
+      } else {
+        el.onclick = function() {
+          return self.action(name);
+        };
+      }
       self.toolbar[name] = el;
       bar.appendChild(el);
     })(tools[i]);
@@ -222,7 +231,7 @@ Editor.prototype.action = function(name, cm) {
       quote: '> ',
       'unordered-list': '* ',
       'ordered-list': '1. '
-    }
+    };
     for (var i = start.line; i <= end.line; i++) {
       (function(i) {
         var text = cm.getLine(i);
