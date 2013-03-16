@@ -189,20 +189,26 @@ Editor.prototype.action = function(name, cm) {
   var stat = getState(cm);
 
   var replaceSelection = function(start, end) {
-    var pos, text;
+    var text;
+    var startPoint = cm.getCursor('start');
+    var endPoint = cm.getCursor('end');
     if (stat[name]) {
-      pos = cm.getCursor('start');
-      text = cm.getLine(pos.line);
-      start = text.slice(0, pos.ch);
-      end = text.slice(pos.ch);
+      text = cm.getLine(startPoint.line);
+      start = text.slice(0, startPoint.ch);
+      end = text.slice(startPoint.ch);
       if (name === 'bold') {
         start = start.replace(/^(.*)?(\*|\_){2}(\S+.*)?$/, '$1$3');
         end = end.replace(/^(.*\S+)?(\*|\_){2}(\s+.*)?$/, '$1$3');
+        startPoint.ch -= 2;
+        endPoint.ch -= 2;
       } else if (name === 'italic') {
         start = start.replace(/^(.*)?(\*|\_)(\S+.*)?$/, '$1$3');
         end = end.replace(/^(.*\S+)?(\*|\_)(\s+.*)?$/, '$1$3');
+        startPoint.ch -= 1;
+        endPoint.ch -= 1;
       }
-      cm.setLine(pos.line, start + end);
+      cm.setLine(startPoint.line, start + end);
+      cm.setSelection(startPoint, endPoint);
       cm.focus();
       return;
     }
@@ -212,16 +218,17 @@ Editor.prototype.action = function(name, cm) {
       end = end || start;
     }
     text = cm.getSelection();
-    pos = cm.getCursor('end');
-    pos.ch += start.length;
     cm.replaceSelection(start + text + end);
-    cm.setCursor(pos);
+
+    startPoint.ch += start.length;
+    endPoint.ch += start.length;
+    cm.setSelection(startPoint, endPoint);
     cm.focus();
   };
 
   var toggleLine = function() {
-    var start = cm.getCursor('start');
-    var end = cm.getCursor('end');
+    var startPoint = cm.getCursor('start');
+    var endPoint = cm.getCursor('end');
     var repl = {
       quote: /^(\s*)\>\s+/,
       'unordered-list': /^(\s*)(\*|\-|\+)\s+/,
@@ -232,7 +239,7 @@ Editor.prototype.action = function(name, cm) {
       'unordered-list': '* ',
       'ordered-list': '1. '
     };
-    for (var i = start.line; i <= end.line; i++) {
+    for (var i = startPoint.line; i <= endPoint.line; i++) {
       (function(i) {
         var text = cm.getLine(i);
         if (stat[name]) {
