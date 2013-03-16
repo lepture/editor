@@ -60,7 +60,7 @@
   color: #959694;
   text-align: right;
 }
-.editor-statusbar a {
+.editor-statusbar span {
   display: inline-block;
   min-width: 4em;
   margin-left: 1em;
