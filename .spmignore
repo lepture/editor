@@ -4,3 +4,7 @@ npm-debug.log
 tmp
 build
 dist
+src
+icomoon
+codemirror
+docs

@@ -64,7 +64,7 @@ module.exports = function(grunt) {
             '});'
           ].join('\n')
         },
-        filename: 'seajs/editor.js'
+        filename: 'cmd/editor.js'
       },
       window: {
         filename: 'js/editor.js'
@@ -92,7 +92,7 @@ module.exports = function(grunt) {
     grunt.file.write('build/' + this.data.filename, data);
   });
 
-  grunt.registerTask('utils', function() {
+  grunt.registerTask('copy', function() {
     var dir = 'icomoon/fonts';
     grunt.file.recurse(dir, function(fpath) {
       var fname = path.relative(dir, fpath);
@@ -102,7 +102,7 @@ module.exports = function(grunt) {
     data += grunt.file.read('src/paper.css');
     data += grunt.file.read('src/editor.css');
     grunt.file.write('build/css/editor.css', data);
-    grunt.file.copy('index.html', 'build/index.html');
+    grunt.file.copy('docs/demo.html', 'build/demo.html');
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -114,5 +114,5 @@ module.exports = function(grunt) {
 
   grunt.registerTask('server', ['livereload-start', 'connect', 'regarde']);
 
-  grunt.registerTask('transport', ['concat', 'generate', 'utils']);
+  grunt.registerTask('transport', ['concat', 'generate', 'copy']);
 };
