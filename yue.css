@@ -1,0 +1,148 @@
+/* base */
+body {
+  margin: 0;
+  padding: 0.4em 1em 6em;
+  background: #f9f9f5;
+}
+.yue {
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* yue.css */
+.yue {
+  font: 16px/1.62 "Helvetica Neue", "Arial", "Xin Gothic", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
+  color: #4c4c4c;
+}
+.yue p {
+  margin: 0.62em 0 1.62em;
+}
+.yue h1,
+.yue h2,
+.yue h3,
+.yue h4,
+.yue h5,
+.yue h6 {
+  color: #222;
+  margin: 1.62em 0 0.62em;
+}
+.yue h1 {
+  font-size: 1.5em;
+}
+.yue h2 {
+  font-size: 1.25em;
+}
+.yue h3 {
+  font-size: 1.1em;
+}
+.yue h4,
+.yue h5,
+.yue h6 {
+  font-size: 1em;
+}
+.yue a {
+  color: #3d8edf;
+  text-decoration: none;
+  word-wrap: break-word;
+}
+.yue a:hover {
+  color: #69a7e6;
+  text-decoration: underline;
+}
+.yue strong {
+  font-weight: bold;
+  color: #222;
+}
+.yue em {
+  font-style: italic;
+  color: #222;
+}
+.yue img {
+  max-width: 98%;
+}
+.yue hr {
+  padding: 0;
+  margin: 14px 0;
+  border: none;
+  height: 1px;
+  background-color: #dadada;
+}
+.yue blockquote {
+  margin: 0.62em 0 1.62em;
+  padding-left: 18px;
+  border-left: 4px solid #dadada;
+  color: #8a8a8a;
+}
+.yue ul,
+.yue ol {
+  margin-left: 14px;
+  padding-left: 16px;
+}
+.yue ul {
+  list-style-type: square;
+}
+.yue ol {
+  list-style-type: decimal;
+}
+.yue li {
+  margin-bottom: 0.6em;
+}
+.yue li ul,
+.yue li,
+.yue ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  margin-left: 14px;
+}
+.yue li ul {
+  list-style-type: disc;
+}
+.yue li ul ul {
+  list-style-type: circle;
+}
+.yue li p {
+  margin: 0.4em 0 0.6em;
+}
+.yue code,
+.yue tt {
+  color: #808080;
+  font-size: 14px;
+  background-color: #f9f9f7;
+  padding: 1px 2px;
+  border: 1px solid #dadada;
+  border-radius: 3px;
+  font-family: "Inconsolata", "Menlo", monospace;
+}
+.yue pre {
+  padding: 7px;
+  border: 1px solid #dadada;
+  border-radius: 4px;
+  overflow: auto;
+  font: 400 14px/1.5 "Inconsolata", "Menlo", monospace;
+  color: #4c4c4c;
+  background-color: #f9f9f7;
+}
+.yue pre code {
+  color: #4c4c4c;
+  border: none;
+  background-color: none;
+  padding: auto;
+}
+.yue table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin-bottom: 1.5em;
+  font-size: 14px;
+}
+.yue th,
+.yue td {
+  text-align: left;
+  padding: 4px 8px 4px 10px;
+  border: 1px solid #dadada;
+}
+.yue td {
+  vertical-align: top;
+}
+.yue tr:nth-child(even) {
+  background-color: #f9f9f7;
+}
