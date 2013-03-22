@@ -6484,10 +6484,11 @@ Editor.prototype.init = function(options) {
   options.shortcuts = options.shortcuts || {
     bold: _('Cmd-B'),
     italic: _('Cmd-I'),
-    link: _('Cmd-L'),
-    image: _('Shift-Cmd-I'),
-    'ordered-list': _('Shift-Cmd-O'),
-    'unordered-list': _('Shift-Cmd-U')
+    link: _('Cmd-K'),
+    image: _('Alt-Cmd-I'),
+    quote: _("Cmd-'"),
+    'ordered-list': _('Cmd-L'),
+    'unordered-list': _('Alt-Cmd-L')
   };
 
   options.iconmap = options.iconmap || {
@@ -6538,31 +6539,18 @@ Editor.prototype.createToolbar = function(tools) {
 
   var self = this;
 
-  var options = this.options;
-  var createIcon = function(name) {
-    var el;
-    if (name === 'separator') {
-      el = document.createElement('i');
-      el.className = name;
-      el.innerHTML = '|';
-      return el;
-    }
-    el = document.createElement('a');
-
-    var shortcut = options.shortcuts[name];
-    if (shortcut) el.title = shortcut;
-
-    el.className = (options.iconPrefix || 'icon-') + (options.iconmap[name] || name);
-    return el;
-  };
+  var options = this.options || {};
+  var actions = options.actions || {};
 
   var el;
   self.toolbar = {};
-  var info = self.options.info || 'http://lab.lepture.com/editor/markdown';
+
+  var info = actions.info || 'http://lab.lepture.com/editor/markdown';
+
   for (var i = 0; i < tools.length; i++) {
     name = tools[i];
     (function(name) {
-      el = createIcon(name);
+      el = createIcon(name, options);
       // bind events, special for info
       if (name === 'info') {
         if (info && typeof info === 'function') {
@@ -6571,6 +6559,9 @@ Editor.prototype.createToolbar = function(tools) {
           el.href = info;
           el.target = '_blank';
         }
+      } else if (actions[name]) {
+        // need a function
+        el.onclick = actions[name];
       } else {
         el.onclick = function() {
           return self.action(name);
@@ -6768,6 +6759,30 @@ function getState(cm, pos) {
   }
   return ret;
 }
+
+var createIcon = function(name, options) {
+  var el;
+  if (name === 'separator') {
+    el = document.createElement('i');
+    el.className = name;
+    el.innerHTML = '|';
+    return el;
+  }
+  el = document.createElement('a');
+
+  var shortcut = options.shortcuts[name];
+  if (shortcut) {
+    el.title = shortcut;
+    el.title = el.title.replace('Cmd', '⌘');
+    if (/Mac/.test(navigator.platform)) {
+      el.title = el.title.replace('Alt', '⌥');
+    }
+  }
+
+  el.className = (options.iconPrefix || 'icon-') + (options.iconmap[name] || name);
+  return el;
+};
+
 
 function toggleFullScreen() {
   // https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
