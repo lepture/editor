@@ -102,7 +102,8 @@ module.exports = function(grunt) {
     data += grunt.file.read('src/paper.css');
     data += grunt.file.read('src/editor.css');
     grunt.file.write('build/css/editor.css', data);
-    grunt.file.copy('docs/demo.html', 'build/demo.html');
+    grunt.file.copy('docs/index.html', 'build/index.html');
+    grunt.file.copy('docs/markdown.html', 'build/markdown.html');
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');

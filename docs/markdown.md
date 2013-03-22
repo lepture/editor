@@ -2,16 +2,34 @@
 
 ----
 
-If you are not familiar with Markdown,  you should spend 15 minutes and go over the excellent [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) at Daring Fireball. Here is a brief.
+Markdown is a text formatting syntax inspired on plain text email. In the words of its creator, [John Gruber][]:
 
-## Strong and Emphasize
+> The idea is that a Markdown-formatted document should be publishable as-is, as plain text, without looking like it’s been marked up with tags or formatting instructions.
+
+[John Gruber]: http://daringfireball.net/
+
+
+## Syntax Guide
+
+### Strong and Emphasize
 
 ```
 *emphasize*    **strong**
 _emphasize_    __strong__
 ```
 
-## Links and Email
+**Shortcuts**
+
+- Add/remove bold:
+
+  ⌘-B for Mac / Ctrl-B for Windows and Linux
+
+- Add/remove italic:
+
+  ⌘-I for Mac / Ctrl-I for windows and Linux
+
+
+### Links
 
 Inline links:
 
@@ -29,13 +47,14 @@ Reference-style links:
     [id]: http://url.com "title"
 ```
 
-Email:
+**Shortcuts**
 
-```
-<example@email.com>
-```
+- Add link:
 
-## Images
+  ⌘-K for Mac / Ctrl-K for Windows and Linux
+
+
+### Images
 
 Inline images:
 
@@ -52,7 +71,16 @@ Reference-style links:
     [id]: http://path/to/img.jpg "title"
 ```
 
-## Headers
+**Shortcuts**
+
+- Add image:
+
+  ⌥-⌘-I for Mac / Alt-Ctrl-I for Windows and Linux
+
+
+### Headers
+
+Atx-style headers:
 
 ```
 # h1
@@ -61,48 +89,90 @@ Reference-style links:
 …
 ```
 
+Closing # are optional.
+
 ```
 # h1 #
 ## h2 ##
 …
 ```
 
-## Lists
 
-Ordered list:
+### Lists
+
+Ordered list without paragraphs:
 
 ```
 1. foo
 2. bar
 ```
 
-Unordered list:
+Unordered list with paragraphs:
 
 ```
-* foo
+* A list item.
+
+  With multiple paragraphs.
+
 * bar
 ```
 
-```
-- foo
-- bar
-```
-
-## Blockquotes
+You can nest them:
 
 ```
-> blockquote
-> > nested blockquote
-> ### h3 in blockquote
+* Abacus
+  * anser
+* Bubbles
+  1. bunk
+  2. bupkis
+     * bar
+  3. burper
+* Cunning
 ```
 
-## Inline Code
+**Shortcuts**
+
+- Add/remove unordered list:
+
+  ⌘-L for Mac / Ctrl-L for Windows and Linux
+
+- Add/remove ordered list:
+
+  ⌥-⌘-L for Mac / Alt-Ctrl-L for Windows and Linux
+
+
+### Blockquotes
 
 ```
-`code` span
+> Email-style angle brackets
+> are used for blockquotes.
+
+> > And, they can be nested.
+
+> #### Headers in blockquotes
+> 
+> * You can quote a list.
+> * Etc.
 ```
 
-## Block Code
+**Shortcuts**
+
+- Add/remove blockquote:
+
+  ⌘-’ for Mac / Ctrl-’ for Windows and Linux
+
+
+### Code Spans
+
+```
+`<code>` spans are delimited
+by backticks.
+
+You can include literal backticks
+like `` `this` ``.
+```
+
+### Code Blocks
 
 Indent at least 4 spaces or 1 tab.
 
@@ -110,4 +180,26 @@ Indent at least 4 spaces or 1 tab.
 This is a normal paragraph
 
     this is code block
+```
+
+
+### Horizontal Rules
+
+Three or more dashes for asterisks.
+
+```
+---
+
+* * *
+
+- - - - 
+```
+
+### Manual Line Breaks
+
+End a line with two or more spaces:
+
+```
+Roses are red, [space][space]
+Violets are blue. [space][space]
 ```
