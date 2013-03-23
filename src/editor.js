@@ -12,7 +12,7 @@ Editor.prototype.init = function(options) {
     'quote', 'unordered-list', 'ordered-list', 'separator',
     'link', 'image', 'separator',
     'undo', 'redo', 'separator',
-    'info', 'expand'
+    'info', 'fullscreen'
   ];
   options.status = options.status || ['lines', 'words', 'cursor'];
 
@@ -34,6 +34,7 @@ Editor.prototype.init = function(options) {
 
   options.iconmap = options.iconmap || {
     quote: 'quotes-left',
+    fullscreen: 'expand',
     'ordered-list': 'numbered-list',
     'unordered-list': 'list'
   };
@@ -270,6 +271,9 @@ Editor.prototype.action = function(name, cm) {
       cm.redo();
       cm.focus();
       break;
+    case 'fullscreen':
+      toggleFullScreen(cm.getWrapperElement());
+      break;
   }
 };
 
@@ -325,11 +329,32 @@ var createIcon = function(name, options) {
 };
 
 
-function toggleFullScreen() {
+function toggleFullScreen(el) {
   // https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
   var doc = document;
-
-  var fullscreenElement = doc.fullscreenElement || doc.mozFullScreenElement || doc.webkitFullscreenElement;
-
-  var requestFullscreen = doc.requestFullscreen || doc.mozRequestFullScreen || doc.webkitRequestFullscreen;
+  var isFull = doc.fullScreen || doc.mozFullScreen || doc.webkitFullScreen;
+  var request = el.requestFullScreen || el.mozRequestFullScreen || el.webkitRequestFullScreen;
+  var request = function() {
+    if (el.requestFullScreen) {
+      el.requestFullScreen();
+    } else if (el.mozRequestFullScreen) {
+      el.mozRequestFullScreen();
+    } else if (el.webkitRequestFullScreen) {
+      el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+    }
+  }
+  var cancel = function() {
+    if (doc.cancelFullScreen) {
+      doc.cancelFullScreen();
+    } else if (doc.mozCancelFullScreen) {
+      doc.mozCancelFullScreen();
+    } else if (doc.webkitCancelFullScreen) {
+      doc.webkitCancelFullScreen();
+    }
+  }
+  if (!isFull) {
+    request();
+  } else if (cancel) {
+    cancel();
+  }
 }
