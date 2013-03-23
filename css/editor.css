@@ -292,6 +292,18 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 .CodeMirror {
   height: 450px;
 }
+:-webkit-full-screen {
+  background: #f9f9f5;
+  padding: 0.5em 1em;
+  width: 100%;
+  height: 100%;
+}
+:-moz-full-screen {
+  padding: 0.5em 1em;
+  background: #f9f9f5;
+  width: 100%;
+  height: 100%;
+}
 .editor-wrapper {
   font: 16px/1.62 "Helvetica Neue", "Xin Gothic", "Hiragino Sans GB", "WenQuanYi Micro Hei", "Microsoft YaHei", sans-serif;
   color: #2c3e50;
