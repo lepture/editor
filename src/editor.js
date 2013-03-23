@@ -7,14 +7,18 @@ Editor.prototype.init = function(options) {
   if (options.element) {
     this.element = options.element;
   }
-  options.tools = options.tools || [
-    'bold', 'italic', 'separator',
-    'quote', 'unordered-list', 'ordered-list', 'separator',
-    'link', 'image', 'separator',
-    'undo', 'redo', 'separator',
-    'info', 'fullscreen'
-  ];
-  options.status = options.status || ['lines', 'words', 'cursor'];
+  if (!options.hasOwnProperty('tools')) {
+    options.tools = [
+      'bold', 'italic', 'separator',
+      'quote', 'unordered-list', 'ordered-list', 'separator',
+      'link', 'image', 'separator',
+      'undo', 'redo', 'separator',
+      'info', 'fullscreen'
+    ];
+  }
+  if (!options.hasOwnProperty('status')) {
+    options.status = ['lines', 'words', 'cursor'];
+  }
 
   var isMac = /Mac/.test(navigator.platform);
   var _ = function(text) {
@@ -46,11 +50,11 @@ Editor.prototype.render = function(el) {
     el = this.element || document.getElementsByTagName('textarea')[0];
   }
   this.element = el;
+  var options = this.options;
+  var shortcuts = options.shortcuts;
 
   var self = this;
-
   var keyMaps = {};
-  var shortcuts = this.options.shortcuts;
   for (var key in shortcuts) {
     (function(key) {
       keyMaps[shortcuts[key]] = function(cm) {
@@ -67,8 +71,12 @@ Editor.prototype.render = function(el) {
     extraKeys: keyMaps
   });
 
-  this.createToolbar();
-  this.createStatusbar();
+  if (options.tools !== false) {
+    this.createToolbar();
+  }
+  if (options.status !== false) {
+    this.createStatusbar();
+  }
 };
 
 Editor.prototype.createToolbar = function(tools) {
@@ -333,7 +341,6 @@ function toggleFullScreen(el) {
   // https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
   var doc = document;
   var isFull = doc.fullScreen || doc.mozFullScreen || doc.webkitFullScreen;
-  var request = el.requestFullScreen || el.mozRequestFullScreen || el.webkitRequestFullScreen;
   var request = function() {
     if (el.requestFullScreen) {
       el.requestFullScreen();
@@ -342,7 +349,7 @@ function toggleFullScreen(el) {
     } else if (el.webkitRequestFullScreen) {
       el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
     }
-  }
+  };
   var cancel = function() {
     if (doc.cancelFullScreen) {
       doc.cancelFullScreen();
@@ -351,7 +358,7 @@ function toggleFullScreen(el) {
     } else if (doc.webkitCancelFullScreen) {
       doc.webkitCancelFullScreen();
     }
-  }
+  };
   if (!isFull) {
     request();
   } else if (cancel) {
