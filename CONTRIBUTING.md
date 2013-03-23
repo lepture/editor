@@ -20,6 +20,23 @@ A little hint to make things simple:
 - when you cloned this repo, run ``npm install``
 - check the code style with ``grunt jshint``
 
+## Grunt
+
+If you haven't installed `grunt` yet, grab the command line:
+
+```
+$ npm install grunt-cli -g
+```
+
+Create a livereload server for your development:
+
+```
+$ grunt server
+```
+
+And open your browser at `http://localhost:8000`.
+
+The source code is in `src`.
 
 ## Git Help
 
