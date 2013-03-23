@@ -104,6 +104,7 @@ module.exports = function(grunt) {
     grunt.file.write('build/css/editor.css', data);
     grunt.file.copy('docs/index.html', 'build/index.html');
     grunt.file.copy('docs/markdown.html', 'build/markdown.html');
+    grunt.file.copy('docs/yue.css', 'build/yue.css');
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
@@ -111,9 +112,9 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-livereload');
 
-  grunt.registerTask('default', ['jshint']);
-
-  grunt.registerTask('server', ['livereload-start', 'connect', 'regarde']);
-
   grunt.registerTask('transport', ['concat', 'generate', 'copy']);
+
+  grunt.registerTask('server', ['transport', 'livereload-start', 'connect', 'regarde']);
+
+  grunt.registerTask('default', ['jshint', 'server']);
 };
