@@ -22,7 +22,10 @@ Editor.prototype.init = function(options) {
 
   var isMac = /Mac/.test(navigator.platform);
   var _ = function(text) {
-    if (!isMac) return text.replace('Cmd', 'Ctrl');
+    if (!isMac) {
+      text = text.replace('Alt-Cmd', 'Ctrl-Alt');
+      text = text.replace('Cmd', 'Ctrl');
+    }
     return text;
   };
 
@@ -32,8 +35,8 @@ Editor.prototype.init = function(options) {
     link: _('Cmd-K'),
     image: _('Alt-Cmd-I'),
     quote: _("Cmd-'"),
-    'ordered-list': _('Cmd-L'),
-    'unordered-list': _('Alt-Cmd-L')
+    'ordered-list': _('Alt-Cmd-L'),
+    'unordered-list': _('Cmd-L')
   };
 
   options.iconmap = options.iconmap || {
