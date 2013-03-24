@@ -28,18 +28,31 @@
   opacity: 0.6;
 }
 .editor-toolbar {
-  border-top: 1px solid #bdc3c7;
-  border-bottom: 1px solid #bdc3c7;
-  padding: 8px 0;
-  text-align: center;
+  position: relative;
   opacity: 0.6;
-  -webkit-mask-box-image: -webkit-radial-gradient(white, transparent 90%);
+}
+.editor-toolbar:before, .editor-toolbar:after {
+  display: block;
+  content: ' ';
+  height: 1px;
+  background-color: #bdc3c7;
+  background: -moz-linear-gradient(45deg, #f9f9f9, #bdc3c7, #f9f9f9);
+  background: -webkit-linear-gradient(45deg, #f9f9f9, #bdc3c7, #f9f9f9);
+  background: -ms-linear-gradient(45deg, #f9f9f9, #bdc3c7, #f9f9f9);
+  background: linear-gradient(45deg, #f9f9f9, #bdc3c7, #f9f9f9);
+}
+.editor-toolbar:before {
+  margin-bottom: 8px;
+}
+.editor-toolbar:after {
+  margin-top: 8px;
 }
 .editor-wrapper input.title:hover, .editor-wrapper input.title:focus, .editor-toolbar:hover {
   opacity: 1;
 }
 .editor-toolbar a {
   display: inline-block;
+  text-align: center;
   text-decoration: none !important;
   color: #2c3e50 !important;
   width: 24px;
@@ -64,6 +77,10 @@
   color: transparent;
   text-indent: -10px;
   margin: 0 6px;
+}
+.editor-toolbar a.icon-expand {
+  position: absolute;
+  right: 0;
 }
 .editor-statusbar {
   border-top: 1px solid #ece9e9;
