@@ -48,7 +48,7 @@
   margin-top: 8px;
 }
 .editor-wrapper input.title:hover, .editor-wrapper input.title:focus, .editor-toolbar:hover {
-  opacity: 1;
+  opacity: 0.8;
 }
 .editor-toolbar a {
   display: inline-block;

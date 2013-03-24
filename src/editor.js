@@ -13,7 +13,8 @@ Editor.prototype.init = function(options) {
       'quote', 'unordered-list', 'ordered-list', 'separator',
       'link', 'image', 'separator',
       'undo', 'redo', 'separator',
-      'info', 'fullscreen'
+      'info', 'preview',
+      'fullscreen'
     ];
   }
   if (!options.hasOwnProperty('status')) {
@@ -41,6 +42,7 @@ Editor.prototype.init = function(options) {
   options.iconmap = options.iconmap || {
     quote: 'quotes-left',
     fullscreen: 'expand',
+    preview: 'eye',
     'ordered-list': 'numbered-list',
     'unordered-list': 'list'
   };

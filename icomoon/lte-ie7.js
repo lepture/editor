@@ -8,7 +8,6 @@ window.onload = function() {
 	var icons = {
 			'icon-bold' : '&#xe000;',
 			'icon-italic' : '&#xe001;',
-			'icon-strikethrough' : '&#xe002;',
 			'icon-quotes-left' : '&#xe003;',
 			'icon-list' : '&#xe004;',
 			'icon-numbered-list' : '&#xe005;',
@@ -21,7 +20,9 @@ window.onload = function() {
 			'icon-question' : '&#xe00c;',
 			'icon-info' : '&#xe00d;',
 			'icon-undo' : '&#xe00e;',
-			'icon-redo' : '&#xe00f;'
+			'icon-redo' : '&#xe00f;',
+			'icon-code' : '&#xe011;',
+			'icon-eye' : '&#xe002;'
 		},
 		els = document.getElementsByTagName('*'),
 		i, attr, html, c, el;
