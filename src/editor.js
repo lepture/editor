@@ -12,7 +12,8 @@ var toolbar = [
   'quote', 'unordered-list', 'ordered-list', '|',
   'link', 'image', '|',
   'undo', 'redo', '|',
-  'info', 'preview',
+  {name: 'info', action: 'http://lab.lepture.com/editor/markdown'},
+  'preview',
   'fullscreen'
 ];
 
@@ -35,13 +36,6 @@ Editor.prototype.init = function(options) {
     options.status = ['lines', 'words', 'cursor'];
   }
 
-  options.iconmap = options.iconmap || {
-    quote: 'quotes-left',
-    fullscreen: 'expand',
-    preview: 'eye',
-    'ordered-list': 'numbered-list',
-    'unordered-list': 'list'
-  };
   this.options = options;
 };
 
@@ -88,29 +82,30 @@ Editor.prototype.createToolbar = function(tools) {
 
   var self = this;
 
-  var options = this.options || {};
-  var actions = options.actions || {};
-
   var el;
   self.toolbar = {};
 
-  var info = actions.info || 'http://lab.lepture.com/editor/markdown';
-
   for (var i = 0; i < tools.length; i++) {
-    name = tools[i];
-    (function(name) {
-      el = createIcon(name, options);
+    (function(tool) {
+      var name, shortcut, action, className;
+      if (tool.name) {
+        name = tool.name;
+        shortcut = tool.shortcut;
+        action = tool.action;
+        className = tool.className;
+      } else {
+        name = tool;
+      }
+      el = createIcon(name, {className: className, shortcut: shortcut});
+
       // bind events, special for info
-      if (name === 'info') {
-        if (info && typeof info === 'function') {
-          el.onclick = info;
-        } else if (typeof info === 'string') {
-          el.href = info;
+      if (action) {
+        if (typeof action === 'function') {
+          el.onclick = action;
+        } else if (typeof action === 'string') {
+          el.href = action;
           el.target = '_blank';
         }
-      } else if (actions[name]) {
-        // need a function
-        el.onclick = actions[name];
       } else {
         el.onclick = function() {
           return self.action(name);
@@ -321,6 +316,7 @@ function fixShortcut(text) {
 };
 
 var createIcon = function(name, options) {
+  options = options || {};
   var el;
   if (name === '|') {
     el = document.createElement('i');
@@ -330,7 +326,7 @@ var createIcon = function(name, options) {
   }
   el = document.createElement('a');
 
-  var shortcut = shortcuts[name];
+  var shortcut = options.shortcut || shortcuts[name];
   if (shortcut) {
     shortcut = fixShortcut(shortcut);
     el.title = shortcut;
@@ -340,7 +336,7 @@ var createIcon = function(name, options) {
     }
   }
 
-  el.className = (options.iconPrefix || 'icon-') + (options.iconmap[name] || name);
+  el.className = options.className || 'icon-' + name;
   return el;
 };
 
