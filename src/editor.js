@@ -1,3 +1,23 @@
+var shortcuts = {
+  bold: 'Cmd-B',
+  italic: 'Cmd-I',
+  link: 'Cmd-K',
+  image: 'Cmd-Alt-I',
+  quote: "Cmd-'",
+  'ordered-list': 'Cmd-Alt-L',
+  'unordered-list': 'Cmd-L'
+};
+var toolbar = [
+  'bold', 'italic', '|',
+  'quote', 'unordered-list', 'ordered-list', '|',
+  'link', 'image', '|',
+  'undo', 'redo', '|',
+  'info', 'preview',
+  'fullscreen'
+];
+
+var isMac = /Mac/.test(navigator.platform);
+
 function Editor(options) {
   this.init(options);
 }
@@ -7,37 +27,13 @@ Editor.prototype.init = function(options) {
   if (options.element) {
     this.element = options.element;
   }
-  if (!options.hasOwnProperty('tools')) {
-    options.tools = [
-      'bold', 'italic', 'separator',
-      'quote', 'unordered-list', 'ordered-list', 'separator',
-      'link', 'image', 'separator',
-      'undo', 'redo', 'separator',
-      'info', 'preview',
-      'fullscreen'
-    ];
-  }
+  options.toolbar = options.toolbar || toolbar;
+  // you can customize toolbar with object
+  // [{name: 'bold', shortcut: 'Ctrl-B', className: 'icon-bold'}]
+
   if (!options.hasOwnProperty('status')) {
     options.status = ['lines', 'words', 'cursor'];
   }
-
-  var isMac = /Mac/.test(navigator.platform);
-  var _ = function(text) {
-    if (!isMac) {
-      text = text.replace('Cmd', 'Ctrl');
-    }
-    return text;
-  };
-
-  options.shortcuts = options.shortcuts || {
-    bold: _('Cmd-B'),
-    italic: _('Cmd-I'),
-    link: _('Cmd-K'),
-    image: _('Cmd-Alt-I'),
-    quote: _("Cmd-'"),
-    'ordered-list': _('Cmd-Alt-L'),
-    'unordered-list': _('Cmd-L')
-  };
 
   options.iconmap = options.iconmap || {
     quote: 'quotes-left',
@@ -55,13 +51,12 @@ Editor.prototype.render = function(el) {
   }
   this.element = el;
   var options = this.options;
-  var shortcuts = options.shortcuts;
 
   var self = this;
   var keyMaps = {};
   for (var key in shortcuts) {
     (function(key) {
-      keyMaps[shortcuts[key]] = function(cm) {
+      keyMaps[fixShortcut(shortcuts[key])] = function(cm) {
         self.action(key, cm);
       };
     })(key);
@@ -75,7 +70,7 @@ Editor.prototype.render = function(el) {
     extraKeys: keyMaps
   });
 
-  if (options.tools !== false) {
+  if (options.toolbar !== false) {
     this.createToolbar();
   }
   if (options.status !== false) {
@@ -84,7 +79,7 @@ Editor.prototype.render = function(el) {
 };
 
 Editor.prototype.createToolbar = function(tools) {
-  tools = tools || this.options.tools;
+  tools = tools || this.options.toolbar;
 
   if (!tools || tools.length === 0) return;
 
@@ -316,22 +311,31 @@ function getState(cm, pos) {
   }
   return ret;
 }
+function fixShortcut(text) {
+  if (isMac) {
+    text = text.replace('Ctrl', 'Cmd');
+  } else {
+    text = text.replace('Cmd', 'Ctrl');
+  }
+  return text;
+};
 
 var createIcon = function(name, options) {
   var el;
-  if (name === 'separator') {
+  if (name === '|') {
     el = document.createElement('i');
-    el.className = name;
+    el.className = 'separator';
     el.innerHTML = '|';
     return el;
   }
   el = document.createElement('a');
 
-  var shortcut = options.shortcuts[name];
+  var shortcut = shortcuts[name];
   if (shortcut) {
+    shortcut = fixShortcut(shortcut);
     el.title = shortcut;
     el.title = el.title.replace('Cmd', '⌘');
-    if (/Mac/.test(navigator.platform)) {
+    if (isMac) {
       el.title = el.title.replace('Alt', '⌥');
     }
   }
