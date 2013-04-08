@@ -5,7 +5,13 @@ function folderMount(connect, point) {
 }
 
 module.exports = function(grunt) {
+  var pkg = require('./package.json');
+  pkg.spm = pkg.spm || {};
+  pkg.spm.sourcedir = 'tmp/src';
+  pkg.spm.output = ['editor.js'];
+
   grunt.initConfig({
+    pkg: pkg,
     jshint: {
       all: [
         'Gruntfile.js',
@@ -57,20 +63,25 @@ module.exports = function(grunt) {
     generate: {
       seajs: {
         options: {
+          buildir: 'tmp/src',
           header: 'define(function(require, exports, module) {',
           footer: [
-            'exports = module.exports = new Editor()',
-            'exports.Editor = Editor',
+            'module.exports = Editor',
             '});'
           ].join('\n')
         },
-        filename: 'cmd/editor.js'
+        filename: 'editor.js'
       },
       window: {
         filename: 'js/editor.js'
       }
     }
   });
+  if (grunt.loadGlobalTask) {
+    require('grunt-spm-build').initConfig(grunt, {pkg: pkg});
+    grunt.loadGlobalTask('grunt-spm-build');
+    grunt.registerTask('build', ['generate:seajs', 'spm-build']);
+  }
 
   grunt.registerTask('concat', function() {
     var data = grunt.file.read('codemirror/codemirror.js');
@@ -84,12 +95,13 @@ module.exports = function(grunt) {
 
   grunt.registerMultiTask('generate', function() {
     var options = this.options({
+      buildir: 'build',
       header: '(function(global) {',
       footer: 'global.Editor = Editor;\n})(this);'
     });
     var data = grunt.file.read('tmp/editor.js');
     data = [options.header, data, options.footer].join('\n');
-    grunt.file.write('build/' + this.data.filename, data);
+    grunt.file.write(path.join(options.buildir, this.data.filename), data);
   });
 
   grunt.registerTask('copy', function() {
@@ -112,7 +124,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-livereload');
 
-  grunt.registerTask('transport', ['concat', 'generate', 'copy']);
+  grunt.registerTask('transport', ['concat', 'generate:window', 'copy']);
 
   grunt.registerTask('server', ['transport', 'livereload-start', 'connect', 'regarde']);
 
