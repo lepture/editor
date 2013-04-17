@@ -77,16 +77,17 @@ module.exports = function(grunt) {
       }
     }
   });
+
   if (grunt.loadGlobalTask) {
-    require('grunt-spm-build').initConfig(grunt, {pkg: pkg});
-    grunt.loadGlobalTask('grunt-spm-build');
-    grunt.registerTask('build', ['generate:seajs', 'spm-build']);
+    // require('spm-build');
+    // grunt.loadGlobalTask('spm-build');
+    // grunt.registerTask('build', ['generate:seajs', 'spm-build']);
   }
 
   grunt.registerTask('concat', function() {
     var data = grunt.file.read('codemirror/codemirror.js');
     data = data.replace('window.CodeMirror', 'var CodeMirror');
-    ['overlay', 'xml', 'markdown', 'gfm'].forEach(function(name) {
+    ['continuelist', 'xml', 'markdown'].forEach(function(name) {
       data += '\n' + grunt.file.read('codemirror/' + name + '.js');
     });
     data += '\n' + grunt.file.read('src/editor.js');

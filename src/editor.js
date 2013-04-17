@@ -57,7 +57,7 @@ Editor.prototype.render = function(el) {
   }
 
   this.codemirror = CodeMirror.fromTextArea(el, {
-    mode: 'gfm',
+    mode: 'markdown',
     theme: 'paper',
     indentWithTabs: true,
     lineNumbers: false,
@@ -313,7 +313,7 @@ function fixShortcut(text) {
     text = text.replace('Cmd', 'Ctrl');
   }
   return text;
-};
+}
 
 var createIcon = function(name, options) {
   options = options || {};
