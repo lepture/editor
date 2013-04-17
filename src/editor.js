@@ -55,6 +55,7 @@ Editor.prototype.render = function(el) {
       };
     })(key);
   }
+  keyMaps["Enter"] = "newlineAndIndentContinueMarkdownList";
 
   this.codemirror = CodeMirror.fromTextArea(el, {
     mode: 'markdown',
