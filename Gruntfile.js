@@ -1,8 +1,4 @@
 var path = require('path');
-var snippet = require('grunt-contrib-livereload/lib/utils').livereloadSnippet;
-function folderMount(connect, point) {
-  return connect.static(path.resolve(point));
-}
 
 module.exports = function(grunt) {
   var pkg = require('./package.json');
@@ -31,7 +27,6 @@ module.exports = function(grunt) {
         "boss": true,
         "expr": true,
         "strict": false,
-        "es5": true,
         "funcscope": true,
         "loopfunc": true,
         "multistr": true,
@@ -48,16 +43,23 @@ module.exports = function(grunt) {
       livereload: {
         options: {
           port: 8000,
-          middleware: function(connect, options) {
-            return [snippet, folderMount(connect, 'build')];
+          middleware: function(connect) {
+            return [
+              require('connect-livereload')(),
+              connect.static(path.resolve('build')),
+              connect.directory(path.resolve('build'))
+            ];
           }
         }
       },
     },
-    regarde: {
-      livereload: {
-        files: 'src/*',
-        tasks: ['transport', 'livereload']
+    watch: {
+      editor: {
+        files: ['src/*'],
+        tasks: ['transport'],
+        options: {
+          livereload: true
+        }
       }
     },
     generate: {
@@ -77,12 +79,6 @@ module.exports = function(grunt) {
       }
     }
   });
-
-  if (grunt.loadGlobalTask) {
-    // require('spm-build');
-    // grunt.loadGlobalTask('spm-build');
-    // grunt.registerTask('build', ['generate:seajs', 'spm-build']);
-  }
 
   grunt.registerTask('concat', function() {
     var data = grunt.file.read('codemirror/codemirror.js');
@@ -121,13 +117,10 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-regarde');
   grunt.loadNpmTasks('grunt-contrib-connect');
-  grunt.loadNpmTasks('grunt-contrib-livereload');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('transport', ['concat', 'generate:window', 'copy']);
-
-  grunt.registerTask('server', ['transport', 'livereload-start', 'connect', 'regarde']);
-
+  grunt.registerTask('server', ['transport', 'connect', 'watch']);
   grunt.registerTask('default', ['jshint', 'server']);
 };

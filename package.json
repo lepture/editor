@@ -11,9 +11,9 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "grunt-regarde": "*",
+    "connect-livereload": "*",
     "grunt-contrib-connect": "*",
-    "grunt-contrib-livereload": "*",
+    "grunt-contrib-watch": "*",
     "grunt-contrib-jshint": "*",
     "grunt-contrib-uglify": "*"
   }
