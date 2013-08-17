@@ -13,8 +13,6 @@
   "devDependencies": {
     "connect-livereload": "*",
     "grunt-contrib-connect": "*",
-    "grunt-contrib-watch": "*",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-uglify": "*"
+    "grunt-contrib-watch": "*"
   }
 }

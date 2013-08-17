@@ -8,37 +8,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: pkg,
-    jshint: {
-      all: [
-        'Gruntfile.js',
-        'src/*.js'
-      ],
-      options: {
-        "eqeqeq": true,
-        "forin": false,
-        "latedef": false,
-        "newcap": true,
-        "quotmark": false,
-        "undef": false,
-        "unused": false,
-        "trailing": true,
-        "lastsemic": true,
-        "asi": false,
-        "boss": true,
-        "expr": true,
-        "strict": false,
-        "funcscope": true,
-        "loopfunc": true,
-        "multistr": true,
-        "proto": false,
-        "smarttabs": true,
-        "shadow": false,
-        "sub": true,
-        "passfail": false,
-        "node": true,
-        "white": false
-      }
-    },
     connect: {
       livereload: {
         options: {
@@ -55,62 +24,67 @@ module.exports = function(grunt) {
     },
     watch: {
       editor: {
-        files: ['src/*'],
+        files: ['*.css', 'src/*'],
         tasks: ['transport'],
         options: {
           livereload: true
         }
       }
     },
-    generate: {
+    transport: {
       seajs: {
         options: {
-          buildir: 'tmp/src',
+          dest: 'tmp/src/editor.js',
           header: 'define(function(require, exports, module) {',
           footer: [
             'module.exports = Editor',
             '});'
           ].join('\n')
-        },
-        filename: 'editor.js'
+        }
       },
-      window: {
-        filename: 'js/editor.js'
-      }
+      component: {
+        options: {
+          dest: 'index.js',
+          header: '',
+          footer: 'module.exports = Editor'
+        }
+      },
+      window: {}
     }
   });
 
   grunt.registerTask('concat', function() {
-    var data = grunt.file.read('codemirror/codemirror.js');
+    var data = grunt.file.read('vendor/codemirror.js');
     data = data.replace('window.CodeMirror', 'var CodeMirror');
     ['continuelist', 'xml', 'markdown'].forEach(function(name) {
-      data += '\n' + grunt.file.read('codemirror/' + name + '.js');
+      data += '\n' + grunt.file.read('vendor/' + name + '.js');
     });
     data += '\n' + grunt.file.read('src/editor.js');
     grunt.file.write('tmp/editor.js', data);
   });
 
-  grunt.registerMultiTask('generate', function() {
+  grunt.registerMultiTask('transport', function() {
     var options = this.options({
-      buildir: 'build',
+      src: 'tmp/editor.js',
+      dest: 'build/editor.js',
       header: '(function(global) {',
       footer: 'global.Editor = Editor;\n})(this);'
     });
-    var data = grunt.file.read('tmp/editor.js');
+    var data = grunt.file.read(options.src);
     data = [options.header, data, options.footer].join('\n');
-    grunt.file.write(path.join(options.buildir, this.data.filename), data);
+    grunt.file.write(options.dest, data);
   });
 
   grunt.registerTask('copy', function() {
-    var dir = 'icomoon/fonts';
+    var dir = 'vendor/icomoon/fonts';
     grunt.file.recurse(dir, function(fpath) {
       var fname = path.relative(dir, fpath);
-      grunt.file.copy(fpath, path.join('build', 'css', 'fonts', fname));
+      grunt.file.copy(fpath, path.join('build', 'fonts', fname));
     });
-    var data = grunt.file.read('icomoon/style.css');
-    data += grunt.file.read('src/paper.css');
-    data += grunt.file.read('src/editor.css');
-    grunt.file.write('build/css/editor.css', data);
+    var data = grunt.file.read('vendor/icomoon/style.css');
+    data += grunt.file.read('paper.css');
+    data += grunt.file.read('editor.css');
+    grunt.file.write('build/editor.css', data);
     grunt.file.copy('docs/index.html', 'build/index.html');
     grunt.file.copy('docs/markdown.html', 'build/markdown.html');
     grunt.file.copy('docs/yue.css', 'build/yue.css');
@@ -120,7 +94,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('transport', ['concat', 'generate:window', 'copy']);
-  grunt.registerTask('server', ['transport', 'connect', 'watch']);
-  grunt.registerTask('default', ['jshint', 'server']);
+  grunt.registerTask('build', ['concat', 'transport:window', 'copy']);
+  grunt.registerTask('server', ['build', 'connect', 'watch']);
+  grunt.registerTask('default', ['server']);
 };

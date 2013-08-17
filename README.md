@@ -6,8 +6,6 @@
 
 Editor is not a WYSIWYG editor, it is a plain text markdown editor. Thanks for the great project [codemirror](http://codemirror.net/), without which editor can never be created.
 
-![Editor Preview](./docs/preview.png)
-
 ## Basic Usage
 
 The easiest way to use Editor is to simply load the script and stylesheet:
