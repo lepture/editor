@@ -25,7 +25,7 @@ module.exports = function(grunt) {
     watch: {
       editor: {
         files: ['*.css', 'src/*'],
-        tasks: ['transport'],
+        tasks: ['build'],
         options: {
           livereload: true
         }
@@ -59,6 +59,7 @@ module.exports = function(grunt) {
     ['continuelist', 'xml', 'markdown'].forEach(function(name) {
       data += '\n' + grunt.file.read('vendor/' + name + '.js');
     });
+    data += '\n' + grunt.file.read('src/intro.js');
     data += '\n' + grunt.file.read('src/editor.js');
     grunt.file.write('tmp/editor.js', data);
   });
