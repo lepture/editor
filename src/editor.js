@@ -13,7 +13,7 @@ var toolbar = [
   '|',
 
   {name: 'info', action: 'http://lab.lepture.com/editor/markdown'},
-  'preview',
+  {name: 'preview', action: togglePreview},
   {name: 'fullscreen', action: toggleFullScreen}
 ]
 
@@ -47,6 +47,16 @@ function Editor(options) {
  * Default toolbar elements.
  */
 Editor.toolbar = toolbar;
+
+/**
+ * Default markdown render.
+ */
+Editor.markdown = function(text) {
+  if (window.marked) {
+    // use marked as markdown parser
+    return marked(text);
+  }
+};
 
 /**
  * Render editor to the given element.

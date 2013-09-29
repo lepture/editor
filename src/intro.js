@@ -255,6 +255,33 @@ function redo(editor) {
   cm.focus();
 }
 
+/**
+ * Preview action.
+ */
+function togglePreview(editor) {
+  var toolbar = editor.toolbar.preview;
+  var parse = editor.constructor.markdown;
+  var cm = editor.codemirror;
+  var wrapper = cm.getWrapperElement();
+  var preview = wrapper.lastChild;
+  if (!/editor-preview/.test(preview.className)) {
+    preview = document.createElement('div');
+    preview.className = 'editor-preview';
+    wrapper.appendChild(preview);
+  }
+  if (/editor-preview-active/.test(preview.className)) {
+    preview.className = preview.className.replace(
+      /\s*editor-preview-active\s*/g, ''
+    );
+    toolbar.className = toolbar.className.replace(/\s*active\s*/g, '')
+  } else {
+    preview.className += ' editor-preview-active';
+    toolbar.className += ' active';
+  }
+  var text = cm.getValue();
+  preview.innerHTML = parse(text);
+}
+
 
 function _replaceSelection(cm, active, start, end) {
   var text;

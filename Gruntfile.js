@@ -89,9 +89,9 @@ module.exports = function(grunt) {
     grunt.file.copy('docs/index.html', 'build/index.html');
     grunt.file.copy('docs/markdown.html', 'build/markdown.html');
     grunt.file.copy('docs/yue.css', 'build/yue.css');
+    grunt.file.copy('docs/marked.js', 'build/marked.js');
   });
 
-  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
