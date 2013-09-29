@@ -24,18 +24,22 @@ editor.render();
 
 The editor will take the position of the first `<textarea>` element. 
 
+## Component
 
-## Get the Code
+If you are using component, you can install it with:
 
-**seajs**
+    $ component install lepture/editor
 
-I didn't keep the dist files in this repo. If you are a fan of `seajs`, and a user of `spm`, you can grab the code with:
+
+## Seajs
+
+If you are using seajs, you can install it with:
 
 ```
 $ spm install lepture/editor
 ```
 
-**build**
+## Development
 
 You can build the dist files with `grunt`. After this repo is cloned, dig into the repo, and install everything your need:
 
@@ -51,6 +55,7 @@ $ grunt transport
 ```
 
 You can get everything you need in the `build` directory.
+
 
 ## Configuration
 
