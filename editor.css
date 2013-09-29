@@ -394,3 +394,24 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 .editor-statusbar .words:before {
   content: 'words: ';
 }
+.editor-preview {
+  position: absolute;
+  padding: 4px;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 700px;
+  background: #f9f9f5;
+  z-index: 9999;
+  overflow: auto;
+  -webkit-transition: left 0.2s ease;
+  -moz-transition: left 0.2s ease;
+  -ms-transition: left 0.2s ease;
+  transition: left 0.2s ease;
+}
+.editor-preview-active {
+  left: 0;
+}
+.editor-preview > p {
+  margin-top: 0;
+}

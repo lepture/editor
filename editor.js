@@ -6719,37 +6719,370 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
 
 CodeMirror.defineMIME("text/x-markdown", "markdown");
 
-var shortcuts = {
-  bold: 'Cmd-B',
-  italic: 'Cmd-I',
-  link: 'Cmd-K',
-  image: 'Cmd-Alt-I',
-  quote: "Cmd-'",
-  'ordered-list': 'Cmd-Alt-L',
-  'unordered-list': 'Cmd-L'
-};
-var toolbar = [
-  'bold', 'italic', '|',
-  'quote', 'unordered-list', 'ordered-list', '|',
-  'link', 'image', '|',
-  'undo', 'redo', '|',
-  {name: 'info', action: 'http://lab.lepture.com/editor/markdown'},
-  'preview',
-  'fullscreen'
-];
 
 var isMac = /Mac/.test(navigator.platform);
 
-function Editor(options) {
-  this.init(options);
+var shortcuts = {
+  'Cmd-B': toggleBold,
+  'Cmd-I': toggleItalic,
+  'Cmd-K': drawLink,
+  'Cmd-Alt-I': drawImage,
+  "Cmd-'": toggleBlockquote,
+  'Cmd-Alt-L': toggleOrderedList,
+  'Cmd-L': toggleUnOrderedList
+};
+
+
+/**
+ * Fix shortcut. Mac use Command, others use Ctrl.
+ */
+function fixShortcut(name) {
+  if (isMac) {
+    name = name.replace('Ctrl', 'Cmd');
+  } else {
+    name = name.replace('Cmd', 'Ctrl');
+  }
+  return name;
 }
 
-Editor.prototype.init = function(options) {
+
+/**
+ * Create icon element for toolbar.
+ */
+function createIcon(name, options) {
   options = options || {};
+  var el = document.createElement('a');
+
+  var shortcut = options.shortcut || shortcuts[name];
+  if (shortcut) {
+    shortcut = fixShortcut(shortcut);
+    el.title = shortcut;
+    el.title = el.title.replace('Cmd', '⌘');
+    if (isMac) {
+      el.title = el.title.replace('Alt', '⌥');
+    }
+  }
+
+  el.className = options.className || 'icon-' + name;
+  return el;
+}
+
+function createSep() {
+  el = document.createElement('i');
+  el.className = 'separator';
+  el.innerHTML = '|';
+  return el;
+}
+
+
+/**
+ * The state of CodeMirror at the given position.
+ */
+function getState(cm, pos) {
+  pos = pos || cm.getCursor('start');
+  var stat = cm.getTokenAt(pos);
+  if (!stat.type) return {};
+
+  var types = stat.type.split(' ');
+
+  var ret = {}, data, text;
+  for (var i = 0; i < types.length; i++) {
+    data = types[i];
+    if (data === 'strong') {
+      ret.bold = true;
+    } else if (data === 'variable-2') {
+      text = cm.getLine(pos.line);
+      if (/^\s*\d+\.\s/.test(text)) {
+        ret['ordered-list'] = true;
+      } else {
+        ret['unordered-list'] = true;
+      }
+    } else if (data === 'atom') {
+      ret.quote = true;
+    } else if (data === 'em') {
+      ret.italic = true;
+    }
+  }
+  return ret;
+}
+
+
+/**
+ * Toggle full screen of the editor.
+ */
+function toggleFullScreen(editor) {
+  var el = editor.codemirror.getWrapperElement();
+
+  // https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
+  var doc = document;
+  var isFull = doc.fullScreen || doc.mozFullScreen || doc.webkitFullScreen;
+  var request = function() {
+    if (el.requestFullScreen) {
+      el.requestFullScreen();
+    } else if (el.mozRequestFullScreen) {
+      el.mozRequestFullScreen();
+    } else if (el.webkitRequestFullScreen) {
+      el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+    }
+  };
+  var cancel = function() {
+    if (doc.cancelFullScreen) {
+      doc.cancelFullScreen();
+    } else if (doc.mozCancelFullScreen) {
+      doc.mozCancelFullScreen();
+    } else if (doc.webkitCancelFullScreen) {
+      doc.webkitCancelFullScreen();
+    }
+  };
+  if (!isFull) {
+    request();
+  } else if (cancel) {
+    cancel();
+  }
+}
+
+
+/**
+ * Action for toggling bold.
+ */
+function toggleBold(editor) {
+  var cm = editor.codemirror;
+  var stat = getState(cm);
+
+  var text;
+  var start = end = '**';
+
+  var startPoint = cm.getCursor('start');
+  var endPoint = cm.getCursor('end');
+  if (stat.bold) {
+    text = cm.getLine(startPoint.line);
+    start = text.slice(0, startPoint.ch);
+    end = text.slice(startPoint.ch);
+
+    start = start.replace(/^(.*)?(\*|\_){2}(\S+.*)?$/, '$1$3');
+    end = end.replace(/^(.*\S+)?(\*|\_){2}(\s+.*)?$/, '$1$3');
+    startPoint.ch -= 2;
+    endPoint.ch -= 2;
+    cm.setLine(startPoint.line, start + end);
+  } else {
+    text = cm.getSelection();
+    cm.replaceSelection(start + text + end);
+
+    startPoint.ch += 2;
+    endPoint.ch += 2;
+  }
+  cm.setSelection(startPoint, endPoint);
+  cm.focus();
+}
+
+
+/**
+ * Action for toggling italic.
+ */
+function toggleItalic(editor) {
+  var cm = editor.codemirror;
+  var stat = getState(cm);
+
+  var text;
+  var start = end = '*';
+
+  var startPoint = cm.getCursor('start');
+  var endPoint = cm.getCursor('end');
+  if (stat.bold) {
+    text = cm.getLine(startPoint.line);
+    start = text.slice(0, startPoint.ch);
+    end = text.slice(startPoint.ch);
+
+    start = start.replace(/^(.*)?(\*|\_)(\S+.*)?$/, '$1$3');
+    end = end.replace(/^(.*\S+)?(\*|\_)(\s+.*)?$/, '$1$3');
+    startPoint.ch -= 1;
+    endPoint.ch -= 1;
+    cm.setLine(startPoint.line, start + end);
+  } else {
+    text = cm.getSelection();
+    cm.replaceSelection(start + text + end);
+
+    startPoint.ch += 1;
+    endPoint.ch += 1;
+  }
+  cm.setSelection(startPoint, endPoint);
+  cm.focus();
+}
+
+
+/**
+ * Action for toggling blockquote.
+ */
+function toggleBlockquote(editor) {
+  var cm = editor.codemirror;
+  _toggleLine(cm, 'quote');
+}
+
+
+/**
+ * Action for toggling ul.
+ */
+function toggleUnOrderedList(editor) {
+  var cm = editor.codemirror;
+  _toggleLine(cm, 'unordered-list');
+}
+
+
+/**
+ * Action for toggling ol.
+ */
+function toggleOrderedList(editor) {
+  var cm = editor.codemirror;
+  _toggleLine(cm, 'ordered-list');
+}
+
+
+/**
+ * Action for drawing a link.
+ */
+function drawLink(editor) {
+  var cm = editor.codemirror;
+  var stat = getState(cm);
+  _replaceSelection(cm, stat.link, '[', '](http://)');
+}
+
+
+/**
+ * Action for drawing an img.
+ */
+function drawImage(editor) {
+  var cm = editor.codemirror;
+  var stat = getState(cm);
+  _replaceSelection(cm, stat.image, '![', '](http://)');
+}
+
+
+/**
+ * Undo action.
+ */
+function undo(editor) {
+  var cm = editor.codemirror;
+  cm.undo();
+  cm.focus();
+}
+
+
+/**
+ * Redo action.
+ */
+function redo(editor) {
+  var cm = editor.codemirror;
+  cm.redo();
+  cm.focus();
+}
+
+/**
+ * Preview action.
+ */
+function togglePreview(editor) {
+  var toolbar = editor.toolbar.preview;
+  var parse = editor.constructor.markdown;
+  var cm = editor.codemirror;
+  var wrapper = cm.getWrapperElement();
+  var preview = wrapper.lastChild;
+  if (!/editor-preview/.test(preview.className)) {
+    preview = document.createElement('div');
+    preview.className = 'editor-preview';
+    wrapper.appendChild(preview);
+  }
+  if (/editor-preview-active/.test(preview.className)) {
+    preview.className = preview.className.replace(
+      /\s*editor-preview-active\s*/g, ''
+    );
+    toolbar.className = toolbar.className.replace(/\s*active\s*/g, '')
+  } else {
+    preview.className += ' editor-preview-active';
+    toolbar.className += ' active';
+  }
+  var text = cm.getValue();
+  preview.innerHTML = parse(text);
+}
+
+
+function _replaceSelection(cm, active, start, end) {
+  var text;
+  var startPoint = cm.getCursor('start');
+  var endPoint = cm.getCursor('end');
+  if (active) {
+    text = cm.getLine(startPoint.line);
+    start = text.slice(0, startPoint.ch);
+    end = text.slice(startPoint.ch);
+    cm.setLine(startPoint.line, start + end);
+  } else {
+    text = cm.getSelection();
+    cm.replaceSelection(start + text + end);
+
+    startPoint.ch += start.length;
+    endPoint.ch += start.length;
+  }
+  cm.setSelection(startPoint, endPoint);
+  cm.focus();
+};
+
+
+function _toggleLine(cm, name) {
+  var stat = getState(cm);
+  var startPoint = cm.getCursor('start');
+  var endPoint = cm.getCursor('end');
+  var repl = {
+    quote: /^(\s*)\>\s+/,
+    'unordered-list': /^(\s*)(\*|\-|\+)\s+/,
+    'ordered-list': /^(\s*)\d+\.\s+/
+  };
+  var map = {
+    quote: '> ',
+    'unordered-list': '* ',
+    'ordered-list': '1. '
+  };
+  for (var i = startPoint.line; i <= endPoint.line; i++) {
+    (function(i) {
+      var text = cm.getLine(i);
+      if (stat[name]) {
+        text = text.replace(repl[name], '$1');
+      } else {
+        text = map[name] + text;
+      }
+      cm.setLine(i, text);
+    })(i);
+  }
+  cm.focus();
+};
+
+var toolbar = [
+  {name: 'bold', action: toggleBold},
+  {name: 'italic', action: toggleItalic},
+  '|',
+
+  {name: 'quote', action: toggleBlockquote},
+  {name: 'unordered-list', action: toggleUnOrderedList},
+  {name: 'ordered-list', action: toggleOrderedList},
+  '|',
+
+  {name: 'link', action: drawLink},
+  {name: 'image', action: drawImage},
+  '|',
+
+  {name: 'info', action: 'http://lab.lepture.com/editor/markdown'},
+  {name: 'preview', action: togglePreview},
+  {name: 'fullscreen', action: toggleFullScreen}
+]
+
+/**
+ * Interface of Editor.
+ */
+function Editor(options) {
+  options = options || {};
+
   if (options.element) {
     this.element = options.element;
   }
-  options.toolbar = options.toolbar || toolbar;
+
+  options.toolbar = options.toolbar || Editor.toolbar;
   // you can customize toolbar with object
   // [{name: 'bold', shortcut: 'Ctrl-B', className: 'icon-bold'}]
 
@@ -6758,24 +7091,55 @@ Editor.prototype.init = function(options) {
   }
 
   this.options = options;
+
+  // If user has passed an element, it should auto rendered
+  if (this.element) {
+    this.render();
+  }
 };
 
+/**
+ * Default toolbar elements.
+ */
+Editor.toolbar = toolbar;
+
+/**
+ * Default markdown render.
+ */
+Editor.markdown = function(text) {
+  if (window.marked) {
+    // use marked as markdown parser
+    return marked(text);
+  }
+};
+
+/**
+ * Render editor to the given element.
+ */
 Editor.prototype.render = function(el) {
   if (!el) {
     el = this.element || document.getElementsByTagName('textarea')[0];
   }
+
+  if (this._rendered && this._rendered === el) {
+    // Already rendered.
+    return;
+  }
+
   this.element = el;
   var options = this.options;
 
   var self = this;
   var keyMaps = {};
+
   for (var key in shortcuts) {
     (function(key) {
-      keyMaps[fixShortcut(shortcuts[key])] = function(cm) {
-        self.action(key, cm);
+      keyMaps[fixShortcut(key)] = function(cm) {
+        shortcuts[key](self);
       };
     })(key);
   }
+
   keyMaps["Enter"] = "newlineAndIndentContinueMarkdownList";
 
   this.codemirror = CodeMirror.fromTextArea(el, {
@@ -6792,12 +7156,16 @@ Editor.prototype.render = function(el) {
   if (options.status !== false) {
     this.createStatusbar();
   }
+
+  this._rendered = this.element;
 };
 
-Editor.prototype.createToolbar = function(tools) {
-  tools = tools || this.options.toolbar;
+Editor.prototype.createToolbar = function(items) {
+  items = items || this.options.toolbar;
 
-  if (!tools || tools.length === 0) return;
+  if (!items || items.length === 0) {
+    return;
+  }
 
   var bar = document.createElement('div');
   bar.className = 'editor-toolbar';
@@ -6807,35 +7175,31 @@ Editor.prototype.createToolbar = function(tools) {
   var el;
   self.toolbar = {};
 
-  for (var i = 0; i < tools.length; i++) {
-    (function(tool) {
-      var name, shortcut, action, className;
-      if (tool.name) {
-        name = tool.name;
-        shortcut = tool.shortcut;
-        action = tool.action;
-        className = tool.className;
+  for (var i = 0; i < items.length; i++) {
+    (function(item) {
+      var el;
+      if (item.name) {
+        el = createIcon(item.name, item);
+      } else if (item === '|') {
+        el = createSep();
       } else {
-        name = tool;
+        el = createIcon(item);
       }
-      el = createIcon(name, {className: className, shortcut: shortcut});
 
       // bind events, special for info
-      if (action) {
-        if (typeof action === 'function') {
-          el.onclick = action;
-        } else if (typeof action === 'string') {
-          el.href = action;
+      if (item.action) {
+        if (typeof item.action === 'function') {
+          el.onclick = function(e) {
+            item.action(self);
+          }
+        } else if (typeof item.action === 'string') {
+          el.href = item.action;
           el.target = '_blank';
         }
-      } else {
-        el.onclick = function() {
-          return self.action(name);
-        };
       }
-      self.toolbar[name] = el;
+      self.toolbar[item.name || item] = el;
       bar.appendChild(el);
-    })(tools[i]);
+    })(items[i]);
   }
 
   var cm = this.codemirror;
@@ -6846,14 +7210,13 @@ Editor.prototype.createToolbar = function(tools) {
       (function(key) {
         var el = self.toolbar[key];
         if (stat[key]) {
-          el.classList.add('active');
+          el.className += ' active';
         } else {
-          el.classList.remove('active');
+          el.className = el.className.replace(/\s*active\s*/g, '')
         }
       })(key);
     }
   });
-
 
   var cmWrapper = cm.getWrapperElement();
   cmWrapper.parentNode.insertBefore(bar, cmWrapper);
@@ -6898,199 +7261,54 @@ Editor.prototype.createStatusbar = function(status) {
   return bar;
 };
 
-Editor.prototype.action = function(name, cm) {
-  cm = cm || this.codemirror;
-  if (!cm) return;
 
-  var stat = getState(cm);
+/**
+ * Bind static methods for exports.
+ */
+Editor.toggleBold = toggleBold;
+Editor.toggleItalic = toggleItalic;
+Editor.toggleBlockquote = toggleBlockquote;
+Editor.toggleUnOrderedList = toggleUnOrderedList;
+Editor.toggleOrderedList = toggleOrderedList;
+Editor.drawLink = drawLink;
+Editor.drawImage = drawImage;
+Editor.undo = undo;
+Editor.redo = redo;
+Editor.toggleFullScreen = toggleFullScreen;
 
-  var replaceSelection = function(start, end) {
-    var text;
-    var startPoint = cm.getCursor('start');
-    var endPoint = cm.getCursor('end');
-    if (stat[name]) {
-      text = cm.getLine(startPoint.line);
-      start = text.slice(0, startPoint.ch);
-      end = text.slice(startPoint.ch);
-      if (name === 'bold') {
-        start = start.replace(/^(.*)?(\*|\_){2}(\S+.*)?$/, '$1$3');
-        end = end.replace(/^(.*\S+)?(\*|\_){2}(\s+.*)?$/, '$1$3');
-        startPoint.ch -= 2;
-        endPoint.ch -= 2;
-      } else if (name === 'italic') {
-        start = start.replace(/^(.*)?(\*|\_)(\S+.*)?$/, '$1$3');
-        end = end.replace(/^(.*\S+)?(\*|\_)(\s+.*)?$/, '$1$3');
-        startPoint.ch -= 1;
-        endPoint.ch -= 1;
-      }
-      cm.setLine(startPoint.line, start + end);
-      cm.setSelection(startPoint, endPoint);
-      cm.focus();
-      return;
-    }
-    if (end === null) {
-      end = '';
-    } else {
-      end = end || start;
-    }
-    text = cm.getSelection();
-    cm.replaceSelection(start + text + end);
-
-    startPoint.ch += start.length;
-    endPoint.ch += start.length;
-    cm.setSelection(startPoint, endPoint);
-    cm.focus();
-  };
-
-  var toggleLine = function() {
-    var startPoint = cm.getCursor('start');
-    var endPoint = cm.getCursor('end');
-    var repl = {
-      quote: /^(\s*)\>\s+/,
-      'unordered-list': /^(\s*)(\*|\-|\+)\s+/,
-      'ordered-list': /^(\s*)\d+\.\s+/
-    };
-    var map = {
-      quote: '> ',
-      'unordered-list': '* ',
-      'ordered-list': '1. '
-    };
-    for (var i = startPoint.line; i <= endPoint.line; i++) {
-      (function(i) {
-        var text = cm.getLine(i);
-        if (stat[name]) {
-          text = text.replace(repl[name], '$1');
-        } else {
-          text = map[name] + text;
-        }
-        cm.setLine(i, text);
-      })(i);
-    }
-    cm.focus();
-  };
-
-  switch (name) {
-    case 'bold':
-      replaceSelection('**');
-      break;
-    case 'italic':
-      replaceSelection('*');
-      break;
-    case 'link':
-      replaceSelection('[', '](http://)');
-      break;
-    case 'image':
-      replaceSelection('![', '](http://)');
-      break;
-    case 'quote':
-    case 'unordered-list':
-    case 'ordered-list':
-      toggleLine();
-      break;
-    case 'undo':
-      cm.undo();
-      cm.focus();
-      break;
-    case 'redo':
-      cm.redo();
-      cm.focus();
-      break;
-    case 'fullscreen':
-      toggleFullScreen(cm.getWrapperElement());
-      break;
-  }
+/**
+ * Bind instance methods for exports.
+ */
+Editor.prototype.toggleBold = function() {
+  toggleBold(this);
 };
-
-function getState(cm, pos) {
-  pos = pos || cm.getCursor('start');
-  var stat = cm.getTokenAt(pos);
-  if (!stat.type) return {};
-
-  var types = stat.type.split(' ');
-
-  var ret = {}, data, text;
-  for (var i = 0; i < types.length; i++) {
-    data = types[i];
-    if (data === 'strong') {
-      ret.bold = true;
-    } else if (data === 'variable-2') {
-      text = cm.getLine(pos.line);
-      if (/^\s*\d+\.\s/.test(text)) {
-        ret['ordered-list'] = true;
-      } else {
-        ret['unordered-list'] = true;
-      }
-    } else if (data === 'atom') {
-      ret.quote = true;
-    } else if (data === 'em') {
-      ret.italic = true;
-    }
-  }
-  return ret;
-}
-function fixShortcut(text) {
-  if (isMac) {
-    text = text.replace('Ctrl', 'Cmd');
-  } else {
-    text = text.replace('Cmd', 'Ctrl');
-  }
-  return text;
-}
-
-var createIcon = function(name, options) {
-  options = options || {};
-  var el;
-  if (name === '|') {
-    el = document.createElement('i');
-    el.className = 'separator';
-    el.innerHTML = '|';
-    return el;
-  }
-  el = document.createElement('a');
-
-  var shortcut = options.shortcut || shortcuts[name];
-  if (shortcut) {
-    shortcut = fixShortcut(shortcut);
-    el.title = shortcut;
-    el.title = el.title.replace('Cmd', '⌘');
-    if (isMac) {
-      el.title = el.title.replace('Alt', '⌥');
-    }
-  }
-
-  el.className = options.className || 'icon-' + name;
-  return el;
+Editor.prototype.toggleItalic = function() {
+  toggleItalic(this);
 };
-
-
-function toggleFullScreen(el) {
-  // https://developer.mozilla.org/en-US/docs/DOM/Using_fullscreen_mode
-  var doc = document;
-  var isFull = doc.fullScreen || doc.mozFullScreen || doc.webkitFullScreen;
-  var request = function() {
-    if (el.requestFullScreen) {
-      el.requestFullScreen();
-    } else if (el.mozRequestFullScreen) {
-      el.mozRequestFullScreen();
-    } else if (el.webkitRequestFullScreen) {
-      el.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-    }
-  };
-  var cancel = function() {
-    if (doc.cancelFullScreen) {
-      doc.cancelFullScreen();
-    } else if (doc.mozCancelFullScreen) {
-      doc.mozCancelFullScreen();
-    } else if (doc.webkitCancelFullScreen) {
-      doc.webkitCancelFullScreen();
-    }
-  };
-  if (!isFull) {
-    request();
-  } else if (cancel) {
-    cancel();
-  }
-}
+Editor.prototype.toggleBlockquote = function() {
+  toggleBlockquote(this);
+};
+Editor.prototype.toggleUnOrderedList = function() {
+  toggleUnOrderedList(this);
+};
+Editor.prototype.toggleOrderedList = function() {
+  toggleOrderedList(this);
+};
+Editor.prototype.drawLink = function() {
+  drawLink(this);
+};
+Editor.prototype.drawImage = function() {
+  drawImage(this);
+};
+Editor.prototype.undo = function() {
+  undo(this);
+};
+Editor.prototype.redo = function() {
+  redo(this);
+};
+Editor.prototype.toggleFullScreen = function() {
+  toggleFullScreen(this);
+};
 
 global.Editor = Editor;
 })(this);
