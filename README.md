@@ -1,4 +1,4 @@
-# Editor
+## Editor
 
 > A markdown editor you really want.
 
