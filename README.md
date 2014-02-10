@@ -11,8 +11,8 @@ Editor is not a WYSIWYG editor, it is a plain text markdown editor. Thanks for t
 The easiest way to use Editor is to simply load the script and stylesheet:
 
 ```html
-<link rel="stylesheet" href="http://lab.lepture.com/editor/css/editor.css" />
-<script type="text/javascript" src="http://lab.lepture.com/editor/js/editor.js"></script>
+<link rel="stylesheet" href="http://lab.lepture.com/editor/editor.css" />
+<script type="text/javascript" src="http://lab.lepture.com/editor/editor.js"></script>
 ```
 
 Having done this, an editor instance can be created:
