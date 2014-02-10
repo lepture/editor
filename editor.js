@@ -6850,7 +6850,8 @@ function toggleBold(editor) {
   var stat = getState(cm);
 
   var text;
-  var start = end = '**';
+  var start = '**';
+  var end = '**';
 
   var startPoint = cm.getCursor('start');
   var endPoint = cm.getCursor('end');
@@ -6884,7 +6885,8 @@ function toggleItalic(editor) {
   var stat = getState(cm);
 
   var text;
-  var start = end = '*';
+  var start = '*';
+  var end = '*';
 
   var startPoint = cm.getCursor('start');
   var endPoint = cm.getCursor('end');
@@ -6994,7 +6996,7 @@ function togglePreview(editor) {
     preview.className = preview.className.replace(
       /\s*editor-preview-active\s*/g, ''
     );
-    toolbar.className = toolbar.className.replace(/\s*active\s*/g, '')
+    toolbar.className = toolbar.className.replace(/\s*active\s*/g, '');
   } else {
     preview.className += ' editor-preview-active';
     toolbar.className += ' active';
@@ -7022,7 +7024,7 @@ function _replaceSelection(cm, active, start, end) {
   }
   cm.setSelection(startPoint, endPoint);
   cm.focus();
-};
+}
 
 
 function _toggleLine(cm, name) {
@@ -7051,7 +7053,23 @@ function _toggleLine(cm, name) {
     })(i);
   }
   cm.focus();
-};
+}
+
+
+/* The right word count in respect for CJK. */
+function wordCount(data) {
+  var pattern = /[a-zA-Z0-9_\u0392-\u03c9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
+  var m = data.match(pattern);
+  var count = 0;
+  for (var i = 0; i < m.length; i++) {
+    if (m[i].charCodeAt(0) >= 0x4E00) {
+      count += m[i].length;
+    } else {
+      count += 1;
+    }
+  }
+  return count;
+}
 
 var toolbar = [
   {name: 'bold', action: toggleBold},
@@ -7070,7 +7088,7 @@ var toolbar = [
   {name: 'info', action: 'http://lab.lepture.com/editor/markdown'},
   {name: 'preview', action: togglePreview},
   {name: 'fullscreen', action: toggleFullScreen}
-]
+];
 
 /**
  * Interface of Editor.
@@ -7096,7 +7114,7 @@ function Editor(options) {
   if (this.element) {
     this.render();
   }
-};
+}
 
 /**
  * Default toolbar elements.
@@ -7191,7 +7209,7 @@ Editor.prototype.createToolbar = function(items) {
         if (typeof item.action === 'function') {
           el.onclick = function(e) {
             item.action(self);
-          }
+          };
         } else if (typeof item.action === 'string') {
           el.href = item.action;
           el.target = '_blank';
@@ -7212,7 +7230,7 @@ Editor.prototype.createToolbar = function(items) {
         if (stat[key]) {
           el.className += ' active';
         } else {
-          el.className = el.className.replace(/\s*active\s*/g, '')
+          el.className = el.className.replace(/\s*active\s*/g, '');
         }
       })(key);
     }
@@ -7239,7 +7257,7 @@ Editor.prototype.createStatusbar = function(status) {
       if (name === 'words') {
         el.innerHTML = '0';
         cm.on('update', function() {
-          el.innerHTML = cm.getValue().length;
+          el.innerHTML = wordCount(cm.getValue());
         });
       } else if (name === 'lines') {
         el.innerHTML = '0';
