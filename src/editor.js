@@ -15,7 +15,7 @@ var toolbar = [
   {name: 'info', action: 'http://lab.lepture.com/editor/markdown'},
   {name: 'preview', action: togglePreview},
   {name: 'fullscreen', action: toggleFullScreen}
-]
+];
 
 /**
  * Interface of Editor.
@@ -41,7 +41,7 @@ function Editor(options) {
   if (this.element) {
     this.render();
   }
-};
+}
 
 /**
  * Default toolbar elements.
@@ -136,7 +136,7 @@ Editor.prototype.createToolbar = function(items) {
         if (typeof item.action === 'function') {
           el.onclick = function(e) {
             item.action(self);
-          }
+          };
         } else if (typeof item.action === 'string') {
           el.href = item.action;
           el.target = '_blank';
@@ -157,7 +157,7 @@ Editor.prototype.createToolbar = function(items) {
         if (stat[key]) {
           el.className += ' active';
         } else {
-          el.className = el.className.replace(/\s*active\s*/g, '')
+          el.className = el.className.replace(/\s*active\s*/g, '');
         }
       })(key);
     }

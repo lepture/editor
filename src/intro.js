@@ -129,7 +129,8 @@ function toggleBold(editor) {
   var stat = getState(cm);
 
   var text;
-  var start = end = '**';
+  var start = '**';
+  var end = '**';
 
   var startPoint = cm.getCursor('start');
   var endPoint = cm.getCursor('end');
@@ -163,7 +164,8 @@ function toggleItalic(editor) {
   var stat = getState(cm);
 
   var text;
-  var start = end = '*';
+  var start = '*';
+  var end = '*';
 
   var startPoint = cm.getCursor('start');
   var endPoint = cm.getCursor('end');
@@ -273,7 +275,7 @@ function togglePreview(editor) {
     preview.className = preview.className.replace(
       /\s*editor-preview-active\s*/g, ''
     );
-    toolbar.className = toolbar.className.replace(/\s*active\s*/g, '')
+    toolbar.className = toolbar.className.replace(/\s*active\s*/g, '');
   } else {
     preview.className += ' editor-preview-active';
     toolbar.className += ' active';
@@ -301,7 +303,7 @@ function _replaceSelection(cm, active, start, end) {
   }
   cm.setSelection(startPoint, endPoint);
   cm.focus();
-};
+}
 
 
 function _toggleLine(cm, name) {
@@ -330,4 +332,4 @@ function _toggleLine(cm, name) {
     })(i);
   }
   cm.focus();
-};
+}
