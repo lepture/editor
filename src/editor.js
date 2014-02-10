@@ -184,7 +184,7 @@ Editor.prototype.createStatusbar = function(status) {
       if (name === 'words') {
         el.innerHTML = '0';
         cm.on('update', function() {
-          el.innerHTML = cm.getValue().length;
+          el.innerHTML = wordCount(cm.getValue());
         });
       } else if (name === 'lines') {
         el.innerHTML = '0';
