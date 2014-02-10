@@ -84,7 +84,7 @@ Contribution is welcome. As a way to keep all code clean, we use Grunt to build 
 
 ## License
 
-Copyright (c) 2013 Hsiaoming Yang
+Copyright (c) 2013 - 2014 by Hsiaoming Yang
 
 Permission is hereby granted, free of charge to any noncommercial projects (paid for commercial support), including the rights to use, copy, modify, merge of the Software. Limitation of the rights to publish, distribute, and/or sell copies of the Software.
 
