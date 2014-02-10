@@ -39,9 +39,17 @@
       <input class="title" type="text" placeholder="Title" />
       <textarea id="editor" placeholder="Content here ...."></textarea>
     </div>
+    <!-- only required for loading sample markdown into the textarea -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.0/zepto.min.js"></script>
     <script type="text/javascript">
-      var editor = new Editor();
-      editor.render();
+    (function($) {
+      $('#editor').load('markdown.md',
+        function(data) {
+          var editor = new Editor();
+          editor.render();
+        }
+      );
+    })(Zepto);
     </script>
   </body>
 </html>
