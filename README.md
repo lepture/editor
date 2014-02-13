@@ -41,7 +41,7 @@ $ spm install lepture/editor
 
 ## Development
 
-You can build the dist files with `grunt`. After this repo is cloned, dig into the repo, and install everything your need:
+You can build the dist files with `grunt`. After this repo is cloned, dig into the repo, and install everything you need:
 
 ```
 $ npm install
