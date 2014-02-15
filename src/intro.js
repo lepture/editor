@@ -277,13 +277,16 @@ function togglePreview(editor) {
     );
     toolbar.className = toolbar.className.replace(/\s*active\s*/g, '');
   } else {
-    preview.className += ' editor-preview-active';
+    /* When the preview button is clicked for the first time,
+     * give some time for the transition from editor.css to fire and the view to slide from right to left,
+     * instead of just appearing.
+     */
+    setTimeout(function() {preview.className += ' editor-preview-active'}, 1);
     toolbar.className += ' active';
   }
   var text = cm.getValue();
   preview.innerHTML = parse(text);
 }
-
 
 function _replaceSelection(cm, active, start, end) {
   var text;
