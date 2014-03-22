@@ -169,7 +169,7 @@ function toggleItalic(editor) {
 
   var startPoint = cm.getCursor('start');
   var endPoint = cm.getCursor('end');
-  if (stat.bold) {
+  if (stat.italic) {
     text = cm.getLine(startPoint.line);
     start = text.slice(0, startPoint.ch);
     end = text.slice(startPoint.ch);
