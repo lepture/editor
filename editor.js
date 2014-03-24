@@ -6890,7 +6890,7 @@ function toggleItalic(editor) {
 
   var startPoint = cm.getCursor('start');
   var endPoint = cm.getCursor('end');
-  if (stat.bold) {
+  if (stat.italic) {
     text = cm.getLine(startPoint.line);
     start = text.slice(0, startPoint.ch);
     end = text.slice(startPoint.ch);
@@ -6998,13 +6998,16 @@ function togglePreview(editor) {
     );
     toolbar.className = toolbar.className.replace(/\s*active\s*/g, '');
   } else {
-    preview.className += ' editor-preview-active';
+    /* When the preview button is clicked for the first time,
+     * give some time for the transition from editor.css to fire and the view to slide from right to left,
+     * instead of just appearing.
+     */
+    setTimeout(function() {preview.className += ' editor-preview-active'}, 1);
     toolbar.className += ' active';
   }
   var text = cm.getValue();
   preview.innerHTML = parse(text);
 }
-
 
 function _replaceSelection(cm, active, start, end) {
   var text;
@@ -7061,6 +7064,7 @@ function wordCount(data) {
   var pattern = /[a-zA-Z0-9_\u0392-\u03c9]+|[\u4E00-\u9FFF\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\uac00-\ud7af]+/g;
   var m = data.match(pattern);
   var count = 0;
+  if( m === null ) return count;
   for (var i = 0; i < m.length; i++) {
     if (m[i].charCodeAt(0) >= 0x4E00) {
       count += m[i].length;
