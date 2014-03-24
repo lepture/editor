@@ -30,6 +30,11 @@
 .editor-toolbar {
   position: relative;
   opacity: 0.6;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 .editor-toolbar:before, .editor-toolbar:after {
   display: block;
