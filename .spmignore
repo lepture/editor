@@ -5,6 +5,6 @@ tmp
 build
 dist
 src
-icomoon
+editor-icomoon
 codemirror
 docs

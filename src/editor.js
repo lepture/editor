@@ -62,20 +62,24 @@ Editor.markdown = function(text) {
  * Render editor to the given element.
  */
 Editor.prototype.render = function(el) {
-  if (!el) {
-    el = this.element || document.getElementsByTagName('textarea')[0];
-  }
+  this.element = el || this.element || document.getElementsByTagName('textarea')[0];
 
-  if (this._rendered && this._rendered === el) {
+  if (this._rendered && this._rendered === this.element) {
     // Already rendered.
     return;
   }
 
-  this.element = el;
-  var options = this.options;
+  this.createCodeMirror(this.element);
+  if (this.options.toolbar !== false) this.createToolbar();
+  if (this.options.status !== false) this.createStatusbar();
 
-  var self = this;
-  var keyMaps = {};
+  this._rendered = this.element;
+};
+
+Editor.prototype.createCodeMirror = function(element) {
+  var self = this,
+    keyMaps = {},
+    codeMirrorDefaults;
 
   for (var key in shortcuts) {
     (function(key) {
@@ -87,22 +91,19 @@ Editor.prototype.render = function(el) {
 
   keyMaps["Enter"] = "newlineAndIndentContinueMarkdownList";
 
-  this.codemirror = CodeMirror.fromTextArea(el, {
+  codeMirrorDefaults = {
     mode: 'markdown',
     theme: 'paper',
     indentWithTabs: true,
     lineNumbers: false,
     extraKeys: keyMaps
-  });
+  }, codeMirrorOptions = this.options.codeMirror || {};
 
-  if (options.toolbar !== false) {
-    this.createToolbar();
-  }
-  if (options.status !== false) {
-    this.createStatusbar();
+  for (var key in codeMirrorDefaults) {
+    codeMirrorOptions[key] = codeMirrorOptions[key] || codeMirrorDefaults[key];
   }
 
-  this._rendered = this.element;
+  this.codemirror = CodeMirror.fromTextArea(element, codeMirrorOptions);
 };
 
 Editor.prototype.createToolbar = function(items) {
