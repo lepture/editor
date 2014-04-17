@@ -12,14 +12,14 @@
     "index.js"
   ],
   "styles": [
-    "vendor/icomoon/style.css",
+    "vendor/editor-icomoon/style.css",
     "editor.css",
     "paper.css"
   ],
   "fonts": [
-    "vendor/icomoon/fonts/icomoon.eot",
-    "vendor/icomoon/fonts/icomoon.svg",
-    "vendor/icomoon/fonts/icomoon.ttf",
-    "vendor/icomoon/fonts/icomoon.woff"
+    "vendor/editor-icomoon/fonts/editor-icomoon.eot",
+    "vendor/editor-icomoon/fonts/editor-icomoon.svg",
+    "vendor/editor-icomoon/fonts/editor-icomoon.ttf",
+    "vendor/editor-icomoon/fonts/editor-icomoon.woff"
   ]
 }

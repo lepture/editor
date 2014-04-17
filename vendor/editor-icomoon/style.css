@@ -1,17 +1,17 @@
 @font-face {
-	font-family: 'icomoon';
-	src:url('fonts/icomoon.eot');
-	src:url('fonts/icomoon.eot?#iefix') format('embedded-opentype'),
-		url('fonts/icomoon.woff') format('woff'),
-		url('fonts/icomoon.ttf') format('truetype'),
-		url('fonts/icomoon.svg#icomoon') format('svg');
+	font-family: 'editor-icomoon';
+	src:url('fonts/editor-icomoon.eot');
+	src:url('fonts/editor-icomoon.eot?#iefix') format('embedded-opentype'),
+		url('fonts/editor-icomoon.woff') format('woff'),
+		url('fonts/editor-icomoon.ttf') format('truetype'),
+		url('fonts/editor-icomoon.svg#editor-icomoon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
 
 /* Use the following CSS code if you want to use data attributes for inserting your icons */
 [data-icon]:before {
-	font-family: 'icomoon';
+	font-family: 'editor-icomoon';
 	content: attr(data-icon);
 	speak: none;
 	font-weight: normal;
@@ -28,7 +28,7 @@ you can use the generic selector below, but it's slower:
 [class*="icon-"] {
 */
 .icon-bold, .icon-italic, .icon-quote, .icon-unordered-list, .icon-ordered-list, .icon-link, .icon-image, .icon-play, .icon-music, .icon-contract, .icon-fullscreen, .icon-question, .icon-info, .icon-undo, .icon-redo, .icon-code, .icon-preview {
-	font-family: 'icomoon';
+	font-family: 'editor-icomoon';
 	speak: none;
 	font-style: normal;
 	font-weight: normal;

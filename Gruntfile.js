@@ -77,12 +77,12 @@ module.exports = function(grunt) {
   });
 
   grunt.registerTask('copy', function() {
-    var dir = 'vendor/icomoon/fonts';
+    var dir = 'vendor/editor-icomoon/fonts';
     grunt.file.recurse(dir, function(fpath) {
       var fname = path.relative(dir, fpath);
       grunt.file.copy(fpath, path.join('build', 'fonts', fname));
     });
-    var data = grunt.file.read('vendor/icomoon/style.css');
+    var data = grunt.file.read('vendor/editor-icomoon/style.css');
     data += grunt.file.read('paper.css');
     data += grunt.file.read('editor.css');
     grunt.file.write('build/editor.css', data);
