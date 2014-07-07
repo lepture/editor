@@ -220,6 +220,7 @@ Editor.drawImage = drawImage;
 Editor.undo = undo;
 Editor.redo = redo;
 Editor.toggleFullScreen = toggleFullScreen;
+Editor.togglePreview = togglePreview;
 
 /**
  * Bind instance methods for exports.
@@ -253,4 +254,7 @@ Editor.prototype.redo = function() {
 };
 Editor.prototype.toggleFullScreen = function() {
   toggleFullScreen(this);
+};
+Editor.prototype.togglePreview = function() {
+  togglePreview(this);
 };
