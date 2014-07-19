@@ -141,6 +141,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
   z-index: 2;
   position: relative;
   overflow: visible;
+  word-break: normal;
 }
 .CodeMirror-wrap pre {
   word-wrap: break-word;
