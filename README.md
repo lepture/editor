@@ -13,6 +13,7 @@ The easiest way to use Editor is to simply load the script and stylesheet:
 ```html
 <link rel="stylesheet" href="http://lab.lepture.com/editor/editor.css" />
 <script type="text/javascript" src="http://lab.lepture.com/editor/editor.js"></script>
+<script type="text/javascript" src="http://lab.lepture.com/editor/marked.js"></script>
 ```
 
 Having done this, an editor instance can be created:
