@@ -219,6 +219,7 @@ Editor.drawLink = drawLink;
 Editor.drawImage = drawImage;
 Editor.undo = undo;
 Editor.redo = redo;
+Editor.togglePreview = togglePreview;
 Editor.toggleFullScreen = toggleFullScreen;
 
 /**
@@ -251,6 +252,9 @@ Editor.prototype.undo = function() {
 Editor.prototype.redo = function() {
   redo(this);
 };
+Editor.prototype.togglePreview = function() {
+  togglePreview(this);
+}
 Editor.prototype.toggleFullScreen = function() {
   toggleFullScreen(this);
 };
