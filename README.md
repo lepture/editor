@@ -25,6 +25,14 @@ editor.render();
 
 The editor will take the position of the first `<textarea>` element. 
 
+### Get the content
+
+To get back the edited content you use:
+
+```js
+editor.codemirror.getValue();
+```
+
 ## Component
 
 If you are using component, you can install it with:
