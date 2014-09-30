@@ -1,7 +1,7 @@
 // CodeMirror version 3.15
 //
 // CodeMirror is the only global var we claim
-window.CodeMirror = (function() {
+var CodeMirror = (function() {
   "use strict";
 
   // BROWSER SNIFFING

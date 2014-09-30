@@ -68,14 +68,15 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
   ,   linktext = 'link'
   ,   linkhref = 'string'
   ,   em       = 'em'
-  ,   strong   = 'strong';
+  ,   strong   = 'strong'
+  ,   strike   = 'strike';
 
-  var hrRE = /^([*\-=_])(?:\s*\1){2,}\s*$/
+  var hrRE = /^([*\-=_])(?:\s*\1){4,}\s*$/
   ,   ulRE = /^[*\-+]\s+/
   ,   olRE = /^[0-9]+\.\s+/
   ,   taskListRE = /^\[(x| )\](?=\s)/ // Must follow ulRE or olRE
   ,   headerRE = /^(?:\={1,}|-{1,})$/
-  ,   textRE = /^[^!\[\]*_\\<>` "'(]+/;
+  ,   textRE = /^[^!\[\]*_~\\<>` "'(]+/;
 
   function switchInline(stream, state, f) {
     state.f = state.inline = f;
@@ -97,6 +98,9 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
     state.em = false;
     // Reset STRONG state
     state.strong = false;
+    // Reset STRIKE state
+    state.strike = false;
+
     // Reset state.quote
     state.quote = 0;
     if (!htmlFound && state.f == htmlBlock) {
@@ -201,6 +205,7 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
     if (state.taskClosed) { return "property"; }
 
     if (state.strong) { styles.push(strong); }
+    if (state.strike) { styles.push(strike); }
     if (state.em) { styles.push(em); }
 
     if (state.linkText) { styles.push(linktext); }
@@ -355,10 +360,10 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
     }
     var t = getType(state);
     if (ch === '*' || (ch === '_' && !ignoreUnderscore)) {
-      if (state.strong === ch && stream.eat(ch)) { // Remove STRONG
+      if (state.strong === ch && stream.eat(ch) && stream.peek(ch)) { // Remove STRONG
         state.strong = false;
         return t;
-      } else if (!state.strong && stream.eat(ch)) { // Add STRONG
+      } else if (!state.strong && stream.eat(ch) && stream.peek(ch)) { // Add STRONG
         state.strong = ch;
         return getType(state);
       } else if (state.em === ch) { // Remove EM
@@ -366,6 +371,14 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
         return t;
       } else if (!state.em) { // Add EM
         state.em = ch;
+        return getType(state);
+      }
+    } else if (ch === '~'){
+      if (state.strike === ch && stream.eat(ch)) { // Remove SRTIKE
+        state.strike = false;
+        return t;
+      } else if (!state.strike && stream.eat(ch)) { // Add STRIKE
+        state.strike = ch;
         return getType(state);
       }
     } else if (ch === ' ') {
@@ -466,6 +479,7 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
         linkTitle: false,
         em: false,
         strong: false,
+        strike: false,
         header: false,
         taskList: false,
         list: false,
@@ -495,6 +509,7 @@ CodeMirror.defineMode("markdown", function(cmCfg, modeCfg) {
         linkTitle: s.linkTitle,
         em: s.em,
         strong: s.strong,
+        strike: s.strike,
         header: s.header,
         taskList: s.taskList,
         list: s.list,

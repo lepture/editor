@@ -86,12 +86,16 @@ Editor.prototype.render = function(el) {
   }
 
   keyMaps["Enter"] = "newlineAndIndentContinueMarkdownList";
+  keyMaps['Tab'] = 'tabAndIndentContinueMarkdownList';
+  keyMaps['Shift-Tab'] = 'shiftTabAndIndentContinueMarkdownList';
 
   this.codemirror = CodeMirror.fromTextArea(el, {
     mode: 'markdown',
     theme: 'paper',
+    tabSize: '2',
     indentWithTabs: true,
     lineNumbers: false,
+    autofocus: true,
     extraKeys: keyMaps
   });
 
