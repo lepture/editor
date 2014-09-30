@@ -87,6 +87,14 @@ The `Editor` Class accepts an option as the parameter. The supported options are
 * shortcuts (object)
 
 
+Example:
+```JavaScript
+new Editor({
+  element: '#editor',
+  tools: false
+})
+```
+
 ## Contributing
 
 Contribution is welcome. As a way to keep all code clean, we use Grunt to build our distributed files. Make sure you have read our [Contributing Guide](./CONTRIBUTING.md).
