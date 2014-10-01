@@ -139,8 +139,8 @@ function toggleBold(editor) {
     start = text.slice(0, startPoint.ch);
     end = text.slice(startPoint.ch);
 
-    start = start.replace(/^(.*)?(\*|\_){2}(\S+.*)?$/, '$1$3');
-    end = end.replace(/^(.*\S+)?(\*|\_){2}(\s+.*)?$/, '$1$3');
+    start = start.replace(/^(.*)?(\*|\_){2}(.*)?$/, '$1$3');
+    end = end.replace(/^(.*)?(\*|\_){2}(.*)?$/, '$1$3');
     startPoint.ch -= 2;
     endPoint.ch -= 2;
     cm.setLine(startPoint.line, start + end);
@@ -174,8 +174,8 @@ function toggleItalic(editor) {
     start = text.slice(0, startPoint.ch);
     end = text.slice(startPoint.ch);
 
-    start = start.replace(/^(.*)?(\*|\_)(\S+.*)?$/, '$1$3');
-    end = end.replace(/^(.*\S+)?(\*|\_)(\s+.*)?$/, '$1$3');
+    start = start.replace(/^(.*)?(\*|\_)(.*)?$/, '$1$3');
+    end = end.replace(/^(.*)?(\*|\_)(.*)?$/, '$1$3');
     startPoint.ch -= 1;
     endPoint.ch -= 1;
     cm.setLine(startPoint.line, start + end);
