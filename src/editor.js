@@ -210,6 +210,18 @@ Editor.prototype.createStatusbar = function(status) {
   return bar;
 };
 
+/**
+ * Get or set the text content.
+ */
+Editor.prototype.value = function(val) {
+  if (val) {
+    this.codemirror.getDoc().setValue(val);
+    return this;
+  } else {
+    return this.codemirror.getValue();
+  }
+};
+
 
 /**
  * Bind static methods for exports.
@@ -258,7 +270,7 @@ Editor.prototype.redo = function() {
 };
 Editor.prototype.togglePreview = function() {
   togglePreview(this);
-}
+};
 Editor.prototype.toggleFullScreen = function() {
   toggleFullScreen(this);
 };
