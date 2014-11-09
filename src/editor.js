@@ -1,20 +1,20 @@
 var toolbar = [
-  {name: 'bold', action: toggleBold},
-  {name: 'italic', action: toggleItalic},
+  {name: 'bold', action: toggleBold, title: 'Bold'},
+  {name: 'italic', action: toggleItalic, title: 'Italics'},
   '|',
 
-  {name: 'quote', action: toggleBlockquote},
-  {name: 'unordered-list', action: toggleUnOrderedList},
-  {name: 'ordered-list', action: toggleOrderedList},
+  {name: 'quote', action: toggleBlockquote, title: 'Quote'},
+  {name: 'unordered-list', action: toggleUnOrderedList, title: 'Unordered List'},
+  {name: 'ordered-list', action: toggleOrderedList, title: 'Ordered List'},
   '|',
 
-  {name: 'link', action: drawLink},
-  {name: 'image', action: drawImage},
+  {name: 'link', action: drawLink, title: 'Link'},
+  {name: 'image', action: drawImage, title: 'Image'},
   '|',
 
-  {name: 'info', action: 'http://lab.lepture.com/editor/markdown'},
-  {name: 'preview', action: togglePreview},
-  {name: 'fullscreen', action: toggleFullScreen}
+  {name: 'info', action: 'http://lab.lepture.com/editor/markdown', title: 'Info'},
+  {name: 'preview', action: togglePreview, title: 'Preview'},
+  {name: 'fullscreen', action: toggleFullScreen, title: 'Fullscreen'}
 ];
 
 /**
