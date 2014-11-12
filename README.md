@@ -16,6 +16,14 @@ The easiest way to use Editor is to simply load the script and stylesheet:
 <script type="text/javascript" src="http://lab.lepture.com/editor/marked.js"></script>
 ```
 
+You can also use [jsdelivr CDN](http://www.jsdelivr.com/#!editor):
+
+```html
+<link rel="stylesheet" href="//cdn.jsdelivr.net/editor/0.1.0/editor.css">
+<script src="//cdn.jsdelivr.net/editor/0.1.0/editor.js"></script>
+<script src="//cdn.jsdelivr.net/editor/0.1.0/marked.js"></script>
+```
+
 Having done this, an editor instance can be created:
 
 ```js
