@@ -24,12 +24,18 @@ function Editor(options) {
   options = options || {};
 
   if (options.element) {
-    this.element = options.element;
+    if (typeof(options.element) == "string") {
+      this.element = document.querySelector(options.element);
+    } else {
+      this.element = options.element;
+    }
   }
 
-  options.toolbar = options.toolbar || Editor.toolbar;
   // you can customize toolbar with object
   // [{name: 'bold', shortcut: 'Ctrl-B', className: 'icon-bold'}]
+  if (!options.hasOwnProperty('toolbar')) {
+    options.toolbar = Editor.toolbar;
+  }
 
   if (!options.hasOwnProperty('status')) {
     options.status = ['lines', 'words', 'cursor'];
