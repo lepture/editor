@@ -80,7 +80,7 @@ The `Editor` Class accepts an option as the parameter. The supported options are
 
 * element (DOM)
 
-  The element of the textarea. The default value is the first `<textarea>`.
+  The DOM element of the textarea, or a string selector. The default value is the first `<textarea>`.
 
 * tools (array or false)
 
@@ -99,7 +99,7 @@ Example:
 ```JavaScript
 new Editor({
   element: '#editor',
-  tools: false
+  toolbar: false
 })
 ```
 
