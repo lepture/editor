@@ -23,6 +23,7 @@ You can also use [jsdelivr CDN](http://www.jsdelivr.com/#!editor):
 <script src="//cdn.jsdelivr.net/editor/0.1.0/editor.js"></script>
 <script src="//cdn.jsdelivr.net/editor/0.1.0/marked.js"></script>
 ```
+If you are self-hosting the files and want to support the toolbar, you also should download the [icon font file](http://lab.lepture.com/editor/fonts/icomoon.woff) and save it in a sub-folder named `fonts` relative to wherever you have placed the `editor.css` stylesheet
 
 Having done this, an editor instance can be created:
 
@@ -33,12 +34,31 @@ editor.render();
 
 The editor will take the position of the first `<textarea>` element. 
 
+## Interacting with the editor
+The editor internally uses [CodeMirror](http://codemirror.net/doc/manual.html) project to render the editor. the CodeMirror object is available via JavaScript as `editor.codemirror`
+
+### Set the editor content
+
+On instantiation, the editor automatically picks up whatever text was present in the `<textarea>` element. To set the content programmatically, use:
+
+```js
+editor.codemirror.setValue( "Your content here..." );
+```
+
 ### Get the content
 
 To get back the edited content you use:
 
 ```js
 editor.codemirror.getValue();
+```
+
+### Refresh the editor view
+
+If your code does something to change the size of the editor element (window resizes are already listened for), or unhides it, you should call refresh function to ensure the editor looks as intended after the sizing/visibility change is complete. For instance, if you have used the editor in a BootStrap Modal dialog, run the refresh function on the `shown.bs.modal` event.
+
+```js
+editor.codemirror.refresh();
 ```
 
 ## Component
