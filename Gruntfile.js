@@ -2,9 +2,6 @@ var path = require('path');
 
 module.exports = function(grunt) {
   var pkg = require('./package.json');
-  pkg.spm = pkg.spm || {};
-  pkg.spm.sourcedir = 'tmp/src';
-  pkg.spm.output = ['editor.js'];
 
   grunt.initConfig({
     pkg: pkg,
@@ -30,50 +27,49 @@ module.exports = function(grunt) {
           livereload: true
         }
       }
-    },
-    transport: {
-      seajs: {
-        options: {
-          dest: 'tmp/src/editor.js',
-          header: 'define(function(require, exports, module) {',
-          footer: [
-            'module.exports = Editor',
-            '});'
-          ].join('\n')
-        }
-      },
-      component: {
-        options: {
-          dest: 'index.js',
-          header: '',
-          footer: 'module.exports = Editor'
-        }
-      },
-      window: {}
     }
   });
 
-  grunt.registerTask('concat', function() {
-    var data = grunt.file.read('vendor/codemirror.js');
-    data = data.replace('window.CodeMirror', 'var CodeMirror');
-    ['continuelist', 'xml', 'markdown'].forEach(function(name) {
-      data += '\n' + grunt.file.read('vendor/' + name + '.js');
-    });
-    data += '\n' + grunt.file.read('src/intro.js');
+  grunt.registerTask('component-bower', function() {
+    var data = grunt.file.read('src/intro.js');
     data += '\n' + grunt.file.read('src/editor.js');
-    grunt.file.write('tmp/editor.js', data);
+    var header = '(function(global) {';
+    var footer = 'global.Editor = Editor;\n})(this);';
+    grunt.file.write('editor.js', header + data + footer);
   });
 
-  grunt.registerMultiTask('transport', function() {
-    var options = this.options({
-      src: 'tmp/editor.js',
-      dest: 'build/editor.js',
-      header: '(function(global) {',
-      footer: 'global.Editor = Editor;\n})(this);'
-    });
-    var data = grunt.file.read(options.src);
-    data = [options.header, data, options.footer].join('\n');
-    grunt.file.write(options.dest, data);
+  grunt.registerTask('component-commonjs', function() {
+    function findStart(data) {
+      var mark = '"use strict";';
+      return data.indexOf(mark) + mark.length;
+    }
+    function stripData(data) {
+      data = data.slice(findStart(data));
+      data = data.replace(/\}\)\;\s*$/, '');
+      return data;
+    }
+
+    var base = 'bower_components/codemirror/';
+
+    var codemirror = grunt.file.read(base + 'lib/codemirror.js');
+    var end = codemirror.indexOf('return CodeMirror;');
+
+    var data = codemirror.slice(findStart(codemirror), end);
+    data += stripData(grunt.file.read(base + 'mode/meta.js'));
+    data += stripData(grunt.file.read(base + 'mode/xml/xml.js'));
+    data += stripData(grunt.file.read(base + 'mode/markdown/markdown.js'));
+
+    data += '\n' + grunt.file.read('src/intro.js');
+    data += '\n' + grunt.file.read('src/editor.js');
+
+    grunt.file.write('index.js', data);
+  });
+
+  grunt.registerTask('component-standalone', function() {
+    var header = '(function(global) {';
+    var footer = 'global.Editor = Editor;\n})(this);';
+    var data = grunt.file.read('index.js');
+    grunt.file.write('build/editor.js', header + data + footer);
   });
 
   grunt.registerTask('copy', function() {
@@ -96,7 +92,11 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('build', ['concat', 'transport:window', 'copy']);
+  grunt.registerTask('build', ['component-commonjs', 'component-standalone', 'copy']);
+
   grunt.registerTask('server', ['build', 'connect', 'watch']);
+
+  grunt.registerTask('release', ['component-commonjs', 'component-bower']);
+
   grunt.registerTask('default', ['server']);
 };

@@ -1,0 +1,28 @@
+{
+  "name": "editor",
+  "version": "0.1.0",
+  "homepage": "https://github.com/lepture/editor",
+  "authors": [
+    "Hsiaoming Yang <me@lepture.com>"
+  ],
+  "description": "A markdown editor",
+  "main": "editor.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "markdown",
+    "editor"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "codemirror": "~4.11.0"
+  }
+}
