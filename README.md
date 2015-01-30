@@ -98,7 +98,7 @@ The `Editor` Class accepts an option as the parameter. The supported options are
 Example:
 ```JavaScript
 new Editor({
-  element: '#editor',
+  element: document.getElementById('editor'),
   tools: false
 })
 ```
