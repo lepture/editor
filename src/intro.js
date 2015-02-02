@@ -32,16 +32,24 @@ function createIcon(name, options) {
   options = options || {};
   var el = document.createElement('a');
 
+  var title = '';
+
+  if (options.title) {
+    title = options.title;
+  }
+
   var shortcut = options.shortcut || shortcuts[name];
   if (shortcut) {
     shortcut = fixShortcut(shortcut);
-    el.title = shortcut;
-    el.title = el.title.replace('Cmd', '⌘');
+    shortcut = shortcut.replace('Cmd', '⌘');
     if (isMac) {
-      el.title = el.title.replace('Alt', '⌥');
+      shortcut = shortcut.replace('Alt', '⌥');
     }
+
+    title += (title == '') ? shortcut : ' (' + shortcut + ')';
   }
 
+  el.title = title;
   el.className = options.className || 'icon-' + name;
   return el;
 }
