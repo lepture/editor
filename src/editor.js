@@ -2,7 +2,7 @@ var toolbar = [
   {name: 'bold', action: toggleBold},
   {name: 'italic', action: toggleItalic},
   {name: 'code', action: toggleCodeBlock},
-  '|a',
+  '|',
 
   {name: 'quote', action: toggleBlockquote},
   {name: 'unordered-list', action: toggleUnOrderedList},
