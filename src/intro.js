@@ -125,34 +125,7 @@ function toggleFullScreen(editor) {
  * Action for toggling bold.
  */
 function toggleBold(editor) {
-  var cm = editor.codemirror;
-  var stat = getState(cm);
-
-  var text;
-  var start = '**';
-  var end = '**';
-
-  var startPoint = cm.getCursor('start');
-  var endPoint = cm.getCursor('end');
-  if (stat.bold) {
-    text = cm.getLine(startPoint.line);
-    start = text.slice(0, startPoint.ch);
-    end = text.slice(startPoint.ch);
-
-    start = start.replace(/^(.*)?(\*|\_){2}(\S+.*)?$/, '$1$3');
-    end = end.replace(/^(.*\S+)?(\*|\_){2}(\s+.*)?$/, '$1$3');
-    startPoint.ch -= 2;
-    endPoint.ch -= 2;
-    cm.setLine(startPoint.line, start + end);
-  } else {
-    text = cm.getSelection();
-    cm.replaceSelection(start + text + end);
-
-    startPoint.ch += 2;
-    endPoint.ch += 2;
-  }
-  cm.setSelection(startPoint, endPoint);
-  cm.focus();
+  _toggleBlock(editor, 'bold', '**');
 }
 
 
@@ -160,36 +133,15 @@ function toggleBold(editor) {
  * Action for toggling italic.
  */
 function toggleItalic(editor) {
-  var cm = editor.codemirror;
-  var stat = getState(cm);
-
-  var text;
-  var start = '*';
-  var end = '*';
-
-  var startPoint = cm.getCursor('start');
-  var endPoint = cm.getCursor('end');
-  if (stat.italic) {
-    text = cm.getLine(startPoint.line);
-    start = text.slice(0, startPoint.ch);
-    end = text.slice(startPoint.ch);
-
-    start = start.replace(/^(.*)?(\*|\_)(\S+.*)?$/, '$1$3');
-    end = end.replace(/^(.*\S+)?(\*|\_)(\s+.*)?$/, '$1$3');
-    startPoint.ch -= 1;
-    endPoint.ch -= 1;
-    cm.setLine(startPoint.line, start + end);
-  } else {
-    text = cm.getSelection();
-    cm.replaceSelection(start + text + end);
-
-    startPoint.ch += 1;
-    endPoint.ch += 1;
-  }
-  cm.setSelection(startPoint, endPoint);
-  cm.focus();
+  _toggleBlock(editor, 'italic', '*');
 }
 
+/**
+ * Action for toggling code block.
+ */
+function toggleCodeBlock(editor) {
+  _toggleBlock(editor, 'code', '```\r\n', '\r\n```');
+}
 
 /**
  * Action for toggling blockquote.
@@ -198,6 +150,7 @@ function toggleBlockquote(editor) {
   var cm = editor.codemirror;
   _toggleLine(cm, 'quote');
 }
+
 
 
 /**
@@ -334,6 +287,39 @@ function _toggleLine(cm, name) {
       cm.setLine(i, text);
     })(i);
   }
+  cm.focus();
+}
+
+function _toggleBlock(editor, type, start_chars, end_chars){
+  end_chars = (typeof end_chars === 'undefined') ? start_chars : end_chars;
+  var cm = editor.codemirror;
+  var stat = getState(cm);
+
+  var text;
+  var start = start_chars;
+  var end = end_chars;
+
+  var startPoint = cm.getCursor('start');
+  var endPoint = cm.getCursor('end');
+  if (stat[type]) {
+    text = cm.getLine(startPoint.line);
+    start = text.slice(0, startPoint.ch);
+    end = text.slice(startPoint.ch);
+    startRegex = new RegExp("/^(.*)?(\*|\_){" + start_chars.length + "}(\S+.*)?$/", "g")
+    start = start.replace(startRegex, '$1$3');
+    endRegex = new RegExp("/^(.*\S+)?(\*|\_){" + end_chars.length + "}(\s+.*)?$/", "g")
+    end = end.replace(endRegex, '$1$3');
+    startPoint.ch -= start_chars.length;
+    endPoint.ch -= end_chars.length;
+    cm.setLine(startPoint.line, start + end);
+  } else {
+    text = cm.getSelection();
+    cm.replaceSelection(start + text + end);
+
+    startPoint.ch += start_chars.length;
+    endPoint.ch += end_chars.length;
+  }
+  cm.setSelection(startPoint, endPoint);
   cm.focus();
 }
 
