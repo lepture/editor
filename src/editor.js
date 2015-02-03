@@ -1,6 +1,7 @@
 var toolbar = [
   {name: 'bold', action: toggleBold},
   {name: 'italic', action: toggleItalic},
+  {name: 'code', action: toggleCodeBlock},
   '|',
 
   {name: 'quote', action: toggleBlockquote},
