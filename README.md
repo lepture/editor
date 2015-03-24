@@ -99,7 +99,7 @@ Example:
 ```JavaScript
 new Editor({
   element: document.getElementById('editor'),
-  tools: false
+  toolbar: []
 })
 ```
 
