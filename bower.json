@@ -7,8 +7,7 @@
   ],
   "description": "A markdown editor",
   "main": [
-    "src/editor.js",
-    "src/intro.js"
+    "src/editor.js"
   ],
   "moduleType": [
     "globals"
