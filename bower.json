@@ -6,7 +6,9 @@
     "Hsiaoming Yang <me@lepture.com>"
   ],
   "description": "A markdown editor",
-  "main": "editor.js",
+  "main": [
+    "src/editor.js"
+  ],
   "moduleType": [
     "globals"
   ],
