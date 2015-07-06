@@ -2,6 +2,8 @@
 
 > A markdown editor you really want.
 
+**NOTICE**: someone has created [another markdown editor](http://nextstepwebs.github.io/simplemde-markdown-editor/)
+
 ## Overview
 
 Editor is not a WYSIWYG editor, it is a plain text markdown editor. Thanks for the great project [codemirror](http://codemirror.net/), without which editor can never be created.
