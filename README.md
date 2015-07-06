@@ -2,7 +2,7 @@
 
 > A markdown editor you really want.
 
-**NOTICE**: someone has created [another markdown editor](http://nextstepwebs.github.io/simplemde-markdown-editor/)
+**NOTICE**: [@NextStepWebs](https://github.com/NextStepWebs/) has created [a markdown editor based on this project](http://nextstepwebs.github.io/simplemde-markdown-editor/)
 
 ## Overview
 
