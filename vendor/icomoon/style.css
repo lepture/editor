@@ -25,9 +25,9 @@
 /*
 Instead of a list of all class selectors,
 you can use the generic selector below, but it's slower:
-[class*="icon-"] {
+[class*="editor-icon-"] {
 */
-.icon-bold, .icon-italic, .icon-quote, .icon-unordered-list, .icon-ordered-list, .icon-link, .icon-image, .icon-play, .icon-music, .icon-contract, .icon-fullscreen, .icon-question, .icon-info, .icon-undo, .icon-redo, .icon-code, .icon-preview {
+.editor-icon-bold, .editor-icon-italic, .editor-icon-quote, .editor-icon-unordered-list, .editor-icon-ordered-list, .editor-icon-link, .editor-icon-image, .editor-icon-play, .editor-icon-music, .editor-icon-contract, .editor-icon-fullscreen, .editor-icon-question, .editor-icon-info, .editor-icon-undo, .editor-icon-redo, .editor-icon-code, .editor-icon-preview {
 	font-family: 'icomoon';
 	speak: none;
 	font-style: normal;
@@ -37,54 +37,54 @@ you can use the generic selector below, but it's slower:
 	line-height: 1;
 	-webkit-font-smoothing: antialiased;
 }
-.icon-bold:before {
+.editor-icon-bold:before {
 	content: "\e000";
 }
-.icon-italic:before {
+.editor-icon-italic:before {
 	content: "\e001";
 }
-.icon-quote:before {
+.editor-icon-quote:before {
 	content: "\e003";
 }
-.icon-unordered-list:before {
+.editor-icon-unordered-list:before {
 	content: "\e004";
 }
-.icon-ordered-list:before {
+.editor-icon-ordered-list:before {
 	content: "\e005";
 }
-.icon-link:before {
+.editor-icon-link:before {
 	content: "\e006";
 }
-.icon-image:before {
+.editor-icon-image:before {
 	content: "\e007";
 }
-.icon-play:before {
+.editor-icon-play:before {
 	content: "\e008";
 }
-.icon-music:before {
+.editor-icon-music:before {
 	content: "\e009";
 }
-.icon-contract:before {
+.editor-icon-contract:before {
 	content: "\e00a";
 }
-.icon-fullscreen:before {
+.editor-icon-fullscreen:before {
 	content: "\e00b";
 }
-.icon-question:before {
+.editor-icon-question:before {
 	content: "\e00c";
 }
-.icon-info:before {
+.editor-icon-info:before {
 	content: "\e00d";
 }
-.icon-undo:before {
+.editor-icon-undo:before {
 	content: "\e00e";
 }
-.icon-redo:before {
+.editor-icon-redo:before {
 	content: "\e00f";
 }
-.icon-code:before {
+.editor-icon-code:before {
 	content: "\e011";
 }
-.icon-preview:before {
+.editor-icon-preview:before {
 	content: "\e002";
 }

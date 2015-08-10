@@ -42,7 +42,7 @@ function createIcon(name, options) {
     }
   }
 
-  el.className = options.className || 'icon-' + name;
+  el.className = options.className || 'editor-icon-' + name;
   return el;
 }
 
