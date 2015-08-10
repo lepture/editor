@@ -2,9 +2,6 @@ var path = require('path');
 
 module.exports = function(grunt) {
   var pkg = require('./package.json');
-  pkg.spm = pkg.spm || {};
-  pkg.spm.sourcedir = 'tmp/src';
-  pkg.spm.output = ['editor.js'];
 
   grunt.initConfig({
     pkg: pkg,
@@ -32,16 +29,6 @@ module.exports = function(grunt) {
       }
     },
     transport: {
-      seajs: {
-        options: {
-          dest: 'tmp/src/editor.js',
-          header: 'define(function(require, exports, module) {',
-          footer: [
-            'module.exports = Editor',
-            '});'
-          ].join('\n')
-        }
-      },
       component: {
         options: {
           dest: 'index.js',
