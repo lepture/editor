@@ -1,6 +1,5 @@
 {
-  "family": "lepture",
-  "name": "editor",
+  "name": "md-editor",
   "version": "0.1.0",
   "repository": {
     "type": "git",
@@ -9,7 +8,9 @@
   "bugs": {
     "url": "https://github.com/lepture/editor/issues"
   },
-  "dependencies": {},
+  "dependencies": {
+    "codemirror": "^5.5.0"
+  },
   "devDependencies": {
     "connect-livereload": "*",
     "grunt-contrib-connect": "*",
