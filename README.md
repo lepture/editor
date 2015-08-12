@@ -2,11 +2,11 @@
 
 > A markdown editor you really want.
 
-**NOTICE**: [@NextStepWebs](https://github.com/NextStepWebs/) has created [an improved markdown editor based on this project](https://github.com/NextStepWebs/simplemde-markdown-editor/)
 
 ## Overview
 
-Editor is not a WYSIWYG editor, it is a plain text markdown editor. Thanks for the great project [codemirror](http://codemirror.net/), without which editor can never be created.
+Editor is not a WYSIWYG editor, it is a plain text markdown editor with simple and beautiful interface.
+
 
 ## Basic Usage
 
@@ -47,33 +47,24 @@ editor.codemirror.getValue();
 
 If you are using component, you can install it with:
 
-    $ component install lepture/editor
+```
+$ component install lepture/editor
+```
 
+## NPM
 
-## Seajs
-
-If you are using seajs, you can install it with:
+You can also install it via npm:
 
 ```
-$ spm install lepture/editor
+$ npm install md-editor
 ```
 
 ## Development
 
-You can build the dist files with `grunt`. After this repo is cloned, dig into the repo, and install everything you need:
-
 ```
 $ npm install
-$ npm install grunt-cli -g
+$ node server.js
 ```
-
-Now you can create the dist files:
-
-```
-$ grunt transport
-```
-
-You can get everything you need in the `build` directory.
 
 
 ## Configuration
