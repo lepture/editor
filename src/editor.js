@@ -234,6 +234,7 @@ Editor.toggleUnOrderedList = toggleUnOrderedList;
 Editor.toggleOrderedList = toggleOrderedList;
 Editor.drawLink = drawLink;
 Editor.drawImage = drawImage;
+Editor.drawImageUri = drawImageUri;
 Editor.undo = undo;
 Editor.redo = redo;
 Editor.togglePreview = togglePreview;
@@ -262,6 +263,9 @@ Editor.prototype.drawLink = function() {
 };
 Editor.prototype.drawImage = function() {
   drawImage(this);
+};
+Editor.prototype.drawImageUri = function() {
+  drawImageUri(this);
 };
 Editor.prototype.undo = function() {
   undo(this);

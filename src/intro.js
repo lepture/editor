@@ -190,6 +190,14 @@ function drawImage(editor) {
   _replaceSelection(cm, stat.image, '![', '](http://)');
 }
 
+/**
+ * Action for drawing an img with uri.
+ */
+function drawImageUri(editor,uri) {
+  var cm = editor.codemirror;
+  var stat = getState(cm);
+  _replaceSelection(cm, stat.image, '![', ']('+uri+')');
+}
 
 /**
  * Undo action.
