@@ -2,7 +2,9 @@
 
 > A markdown editor you really want.
 
-**NOTICE**: [@NextStepWebs](https://github.com/NextStepWebs/) has created [an improved markdown editor based on this project](https://github.com/NextStepWebs/simplemde-markdown-editor/)
+## Sponsors
+
+Editor is sponsored by [Typlog](https://typlog.com/).
 
 ## Overview
 
