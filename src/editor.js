@@ -238,6 +238,7 @@ Editor.undo = undo;
 Editor.redo = redo;
 Editor.togglePreview = togglePreview;
 Editor.toggleFullScreen = toggleFullScreen;
+Editor.togglePreview = togglePreview;
 
 /**
  * Bind instance methods for exports.
@@ -274,4 +275,7 @@ Editor.prototype.togglePreview = function() {
 };
 Editor.prototype.toggleFullScreen = function() {
   toggleFullScreen(this);
+};
+Editor.prototype.togglePreview = function() {
+  togglePreview(this);
 };
